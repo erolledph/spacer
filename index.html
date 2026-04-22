@@ -1481,43 +1481,30 @@
             const hb = document.getElementById('health-bar');
             const sb = document.getElementById('shield-bar');
             
-            if (shieldActivated) {
-                // When shield is active: health is 0-200
-                // Total bar width is 200%
-                // Green bar shows first 100% (0-100 hp)
-                const greenPercent = (Math.max(0, Math.min(health, 100)) / 100) * 100;
-                hb.style.width = greenPercent + '%';
-                
-                // Yellow shield bar shows remaining (100-200 hp, which is 100-200% total)
-                if (health > 100) {
-                    const shieldHealth = Math.min(health - 100, 100);
-                    const shieldPercent = (shieldHealth / 100) * 100;
-                    sb.style.width = shieldPercent + '%';
-                    sb.style.display = 'block';
-                } else {
-                    sb.style.width = '0%';
-                    sb.style.display = 'none';
-                }
-                
-                // Green bar is always YELLOW when shield is active (showing shield protection)
-                hb.style.backgroundColor = '#ffff00';
+            // Green bar: always shows 0-100 health (changes color based on health %)
+            const healthValue = Math.max(0, Math.min(health, 100));
+            const greenPercent = (healthValue / 100) * 100;
+            hb.style.width = greenPercent + '%';
+            
+            // Green bar color based on actual health (0-100)
+            const healthPercent = (healthValue / 100) * 100;
+            if (healthPercent <= 30) {
+                hb.style.backgroundColor = '#ff0055'; // Red
+            } else if (healthPercent <= 60) {
+                hb.style.backgroundColor = '#ffff00'; // Yellow
             } else {
-                // When shield is inactive: health is 0-100
-                const greenPercent = (Math.max(0, health) / 100) * 100;
-                hb.style.width = greenPercent + '%';
-                
-                // No shield bar
+                hb.style.backgroundColor = '#00ff00'; // Green
+            }
+            
+            // Yellow shield bar: only shows extra health (100-200 hp)
+            if (shieldActivated && health > 100) {
+                const shieldHealth = Math.min(health - 100, 100);
+                const shieldPercent = (shieldHealth / 100) * 100;
+                sb.style.width = shieldPercent + '%';
+                sb.style.display = 'block';
+            } else {
+                sb.style.width = '0%';
                 sb.style.display = 'none';
-                
-                // Green bar color changes based on health (0-100)
-                const healthPercent = (Math.max(0, health) / 100) * 100;
-                if (healthPercent <= 30) {
-                    hb.style.backgroundColor = '#ff0055'; // Red
-                } else if (healthPercent <= 60) {
-                    hb.style.backgroundColor = '#ffff00'; // Yellow
-                } else {
-                    hb.style.backgroundColor = '#00ff00'; // Green
-                }
             }
         }
 
