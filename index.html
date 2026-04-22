@@ -623,19 +623,19 @@
             z-index: 150;
             min-height: 90px;
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 100%;
             box-sizing: border-box;
             position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
+            transform: none;
             box-shadow: 0 -4px 20px rgba(255,0,85,0.15);
         }
 
         @keyframes kbSlideUp {
-            from { transform: translateX(-50%) translateY(100%); }
-            to { transform: translateX(-50%) translateY(0); }
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
         #virtual-keyboard.show {
