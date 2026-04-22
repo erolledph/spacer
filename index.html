@@ -1477,13 +1477,12 @@
             setTimeout(() => {
                 alert(`Score succeeded!\n\nName: ${playerName}\nScore: ${finalScore}\n\n(Webhook/POST not implemented yet)`);
             }, 100);
-        });
-
-function drawPlayer() {
+        function drawPlayer() {
             const sprite = document.getElementById('spaceship-sprite');
             
             let rotation = 0;
-            if (currentTarget) {
+            // Only rotate when in real game mode (not demo or idle)
+            if (isPlaying && currentTarget) {
                 const dx = currentTarget.x - player.x;
                 const dy = currentTarget.y - player.y;
                 rotation = Math.atan2(dx, dy) * 0.15;
