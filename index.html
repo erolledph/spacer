@@ -1421,6 +1421,8 @@
         }
 
         function gameOver(reason) {
+            console.log('gameOver called:', reason);
+            alert('GAME OVER: ' + reason);
             isPlaying = false;
             isDemoMode = false;
             document.getElementById('bg-music').pause();
@@ -1442,6 +1444,7 @@
             document.getElementById('start-btn').style.display = 'flex';
             
             gameOverScreen.style.display = 'flex';
+            console.log('Modal display set to flex');
         }
 
         document.getElementById('submit-score-btn')?.addEventListener('click', function() {
