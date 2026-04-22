@@ -711,7 +711,6 @@
                                     </div>
                                     <button class="action-btn" id="submit-score-btn">SUBMIT SCORE</button>
                                 </div>
-                                <p id="death-reason"></p>
                             </div>
                             <div class="menu-buttons">
                                 <button class="menu-btn btn-play" id="start-btn">START MISSION</button>
@@ -1354,7 +1353,6 @@
             const autoName = "Pilot_" + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('player-name').value = autoName;
             
-            document.getElementById('death-reason').innerText = reason;
             document.getElementById('instructions').innerHTML = 'Press [J] to continue';
             document.getElementById('start-btn').innerText = "RETRY MISSION";
             document.getElementById('start-btn').style.display = 'flex';
