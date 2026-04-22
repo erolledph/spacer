@@ -1809,6 +1809,8 @@
         const sprite = document.getElementById('spaceship-sprite');
         sprite.style.display = 'block';
         
+        updateUI();
+        
         function renderStartScreen() {
             if (isPlaying) return;
             if (!isDemoMode) {
