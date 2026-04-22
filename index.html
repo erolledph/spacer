@@ -809,7 +809,7 @@
             const vkToggle = document.getElementById('vk-toggle');
             const vkEnabled = vkToggle ? vkToggle.checked : false;
             
-            targetPlayerY = vkEnabled ? canvas.height - 230 : canvas.height - 60;
+            targetPlayerY = vkEnabled ? canvas.height - 280 : canvas.height - 60;
         }
         
         function updatePlayerPosition() {
@@ -1047,7 +1047,7 @@
             const vkEnabled = document.getElementById('vk-toggle').checked;
             
             document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
-            targetPlayerY = vkEnabled ? canvas.height - 230 : canvas.height - 60;
+            targetPlayerY = vkEnabled ? canvas.height - 280 : canvas.height - 60;
             
             score = 0;
             streak = 0;
