@@ -1437,12 +1437,13 @@
             ctx.scale(0.08, 0.08);
             ctx.fillStyle = '#00ffff';
             ctx.fill(spaceshipPath);
-            ctx.restore();
             
             ctx.fillStyle = '#ff4500';
             ctx.beginPath();
-            ctx.ellipse(player.x, player.y + 5, 3, 8 + Math.sin(Date.now() * 0.01) * 2, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 20, 3, 8 + Math.sin(Date.now() * 0.01) * 2, 0, 0, Math.PI * 2);
             ctx.fill();
+            
+            ctx.restore();
         }
 
         function gameLoop(timestamp) {
