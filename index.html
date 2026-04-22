@@ -908,6 +908,7 @@
         let waveBreak = false;
 
         const heartPath = new Path2D("M32,8c0,16,20,24,20,24s20-8,20-24c0-10-8-18-20-18C40-10,32-2,32,8z");
+        const plusPath = new Path2D("M16 4v24M4 16h24");
 
         const player = { x: 0, y: 0 }; 
 
@@ -1568,8 +1569,9 @@
                     ctx.save();
                     ctx.translate(enemy.x - 10, enemy.y - 22);
                     ctx.scale(0.45, 0.45);
-                    ctx.fillStyle = '#ff0055';
-                    ctx.fill(heartPath);
+                    ctx.strokeStyle = '#ff0055';
+                    ctx.lineWidth = 3;
+                    ctx.stroke(plusPath);
                     ctx.restore();
                 }
 
