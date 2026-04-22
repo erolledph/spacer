@@ -1127,6 +1127,7 @@
             
             score = 0;
             streak = 0;
+            console.log('Starting game, shieldActivated:', shieldActivated, 'health should be:', shieldActivated ? 200 : 100);
             health = shieldActivated ? 200 : 100;
             enemies = [];
             lasers = [];
@@ -1841,8 +1842,10 @@
 
         document.getElementById('shield-promo')?.addEventListener('click', function(e) {
             e.stopPropagation();
+            console.log('Shield clicked, shieldActivated before:', shieldActivated);
             if (shieldActivated) return;
             shieldActivated = true;
+            console.log('Shield activated now, shieldActivated:', shieldActivated);
             document.getElementById('shield-promo').classList.add('activated');
             document.getElementById('shield-status').innerText = 'SHIELD ACTIVATED!';
             window.open('https://example.com', '_blank');
