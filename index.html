@@ -731,7 +731,7 @@
                                 </div>
                                 <div class="bento-item form-box">
                                     <input type="text" id="player-name" placeholder="Your name" maxlength="15">
-                                    <button class="action-btn" id="submit-score-btn">SUBMIT</button>
+                                    <button class="action-btn" id="submit-score-btn">SUCCEED</button>
                                 </div>
                             </div>
                             <div class="menu-buttons">
@@ -1385,7 +1385,7 @@
         document.getElementById('submit-score-btn')?.addEventListener('click', function() {
             const playerName = document.getElementById('player-name')?.value || 'Anonymous';
             const finalScore = score;
-            alert(`Score submitted!\n\nName: ${playerName}\nScore: ${finalScore}\n\n(Webhook/POST not implemented yet)`);
+            alert(`Score succeeded!\n\nName: ${playerName}\nScore: ${finalScore}\n\n(Webhook/POST not implemented yet)`);
         });
 
         function drawPlayer() {
