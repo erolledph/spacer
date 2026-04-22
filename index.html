@@ -166,7 +166,7 @@
         }
 
         #game-over {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -174,9 +174,11 @@
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
             display: none;
             pointer-events: auto;
-            z-index: 200;
+            z-index: 10000;
         }
 
         .main-menu {
@@ -185,7 +187,11 @@
             border-radius: 16px;
             padding: 30px 25px;
             box-shadow: 0 0 40px rgba(0,255,255,0.15), inset 0 0 30px rgba(0,255,255,0.03);
+            width: 85%;
+            max-width: 380px;
         }
+
+        #game-over { display: flex; }
 
         #game-over h1 {
             color: var(--neon-blue);
