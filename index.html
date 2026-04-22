@@ -239,13 +239,14 @@
             background: linear-gradient(145deg, rgba(15,15,35,0.98), rgba(5,5,18,0.98));
             border: 2px solid var(--neon-blue);
             border-radius: 20px;
-            padding: 40px 35px;
+            padding: 35px 25px;
             box-shadow: 0 0 60px rgba(0,255,255,0.12), inset 0 0 40px rgba(0,255,255,0.02);
-            width: 85%;
+            width: calc(100% - 40px);
             max-width: 400px;
             text-align: center;
             animation: modalSlideIn 0.4s ease-out;
-            margin: 0 auto;
+            margin: 20px auto;
+            box-sizing: border-box;
         }
 
         @keyframes modalSlideIn {
@@ -466,11 +467,12 @@
             border-radius: 16px;
             padding: 25px 20px;
             text-align: center;
-            width: 85%;
+            width: calc(100% - 40px);
             max-width: 340px;
             box-shadow: 0 0 40px rgba(255,0,85,0.2), inset 0 0 20px rgba(255,0,85,0.05);
             animation: modalSlideIn 0.3s ease-out;
-            margin: 0 auto;
+            margin: 20px auto;
+            box-sizing: border-box;
         }
 
         @keyframes modalSlideIn {
