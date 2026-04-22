@@ -1460,7 +1460,9 @@
             
             const hb = document.getElementById('health-bar');
             hb.style.width = Math.max(0, health) + '%';
-            if (health <= 30) hb.style.backgroundColor = '#ff0055';
+            if (shieldActivated) {
+                hb.style.backgroundColor = '#ffcc00';
+            } else if (health <= 30) hb.style.backgroundColor = '#ff0055';
             else if (health <= 60) hb.style.backgroundColor = '#ffff00';
             else hb.style.backgroundColor = '#00ff00';
         }
