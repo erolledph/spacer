@@ -200,16 +200,64 @@
 
         #health-container {
             position: absolute;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 30%;
-            max-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        #health-bar-container {
+            width: clamp(200px, 30%, 300px);
             height: clamp(10px, 3vh, 15px);
             background: rgba(255,255,255,0.2);
             border: 2px solid #fff;
             border-radius: 10px;
             overflow: hidden;
+        }
+
+        #shield-bar-container {
+            width: clamp(200px, 30%, 300px);
+            height: clamp(8px, 2.5vh, 12px);
+            background: rgba(255,255,255,0.15);
+            border: 1px solid #ffff00;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        #shield-bar-container.active {
+            display: block;
+        }
+
+        #health-bar-background {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        #health-bar {
+            height: 100%;
+            transition: width 0.2s, background-color 0.2s;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        #shield-bar-bg {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        #shield-bar {
+            height: 100%;
+            background-color: #ffff00;
+            transition: width 0.2s;
+            position: relative;
+            flex-shrink: 0;
         }
 
         #health-bar-background {
@@ -756,9 +804,15 @@
                     </audio>
                     <div id="ui-layer">
                         <div id="health-container">
-                            <div id="health-bar-background">
-                                <div id="health-bar"></div>
-                                <div id="shield-bar"></div>
+                            <div id="health-bar-container">
+                                <div id="health-bar-background">
+                                    <div id="health-bar"></div>
+                                </div>
+                            </div>
+                            <div id="shield-bar-container">
+                                <div id="shield-bar-bg">
+                                    <div id="shield-bar"></div>
+                                </div>
                             </div>
                         </div>
                         <div id="top-right-icons">
@@ -1480,6 +1534,7 @@
             
             const hb = document.getElementById('health-bar');
             const sb = document.getElementById('shield-bar');
+            const shieldContainer = document.getElementById('shield-bar-container');
             
             // Green bar: always shows 0-100 health (changes color based on health %)
             const healthValue = Math.max(0, Math.min(health, 100));
@@ -1501,10 +1556,10 @@
                 const shieldHealth = Math.min(health - 100, 100);
                 const shieldPercent = (shieldHealth / 100) * 100;
                 sb.style.width = shieldPercent + '%';
-                sb.style.display = 'block';
+                shieldContainer.classList.add('active');
             } else {
                 sb.style.width = '0%';
-                sb.style.display = 'none';
+                shieldContainer.classList.remove('active');
             }
         }
 
