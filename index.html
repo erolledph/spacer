@@ -166,7 +166,7 @@
         }
 
         #game-over {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -174,13 +174,9 @@
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             display: none;
             pointer-events: auto;
-            z-index: 10000;
-            animation: modalSlideIn 0.3s ease-out;
+            z-index: 200;
         }
 
         .main-menu {
@@ -814,8 +810,8 @@
                 if (isPlaying) {
                     isPlaying = false;
                     document.getElementById('settings-modal').classList.add('show');
-                    document.getElementById('gameplay-buttons').style.display = 'block';
-                    document.getElementById('close-settings').style.display = 'block';
+                    document.getElementById('gameplay-buttons').style.display = 'flex';
+                    document.getElementById('close-settings').style.display = 'flex';
                     document.getElementById('start-from-settings').style.display = 'none';
                     document.getElementById('settings-title').innerText = 'PAUSED';
                 } else if (document.getElementById('settings-modal').classList.contains('show')) {
@@ -829,7 +825,7 @@
             }
             
             // Press J to restart when game over
-            if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'block') {
+            if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'flex') {
                 startGame();
                 return;
             }
@@ -973,7 +969,7 @@
                 settingsModal.classList.add('show');
                 safeGet('gameplay-buttons').style.display = 'none';
                 safeGet('close-settings').style.display = 'none';
-                safeGet('start-from-settings').style.display = 'block';
+                safeGet('start-from-settings').style.display = 'flex';
                 safeGet('settings-title').innerText = 'SETTINGS';
             });
 
@@ -998,8 +994,8 @@
                 const soundOn = safeGet('sound-on-icon');
                 const soundOff = safeGet('sound-off-icon');
                 if (soundOn && soundOff) {
-                    soundOn.style.display = bgMusicEnabled ? 'block' : 'none';
-                    soundOff.style.display = bgMusicEnabled ? 'none' : 'block';
+                    soundOn.style.display = bgMusicEnabled ? 'flex' : 'none';
+                    soundOff.style.display = bgMusicEnabled ? 'none' : 'flex';
                 }
             }
 
@@ -1008,8 +1004,8 @@
                     if (isPlaying) {
                         isPlaying = false;
                         settingsModal.classList.add('show');
-                        safeGet('gameplay-buttons').style.display = 'block';
-                        safeGet('close-settings').style.display = 'block';
+                        safeGet('gameplay-buttons').style.display = 'flex';
+                        safeGet('close-settings').style.display = 'flex';
                         safeGet('start-from-settings').style.display = 'none';
                         safeGet('settings-title').innerText = "PAUSED";
                     }
@@ -1023,7 +1019,7 @@
 
             safeAddEvent('close-settings', 'click', () => {
                 settingsModal.classList.remove('show');
-                if (safeGet('game-over').style.display !== 'block') {
+                if (safeGet('game-over').style.display !== 'flex') {
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
@@ -1145,7 +1141,7 @@ function toggleVirtualKeyboard(show) {
                 const bgMusic = safeGet('bg-music');
                 if (bgMusic) bgMusic.pause();
                 settingsModal.classList.remove('show');
-                safeGet('game-over').style.display = 'block';
+                safeGet('game-over').style.display = 'flex';
                 safeGet('game-stats').style.display = 'none';
                 safeGet('screen-title').innerText = "KEYBOARD RANGER";
                 safeGet('start-btn').innerText = "START MISSION";
@@ -1273,14 +1269,14 @@ function spawnEnemy(timestamp) {
             const gameOverScreen = document.getElementById('game-over');
             
             document.getElementById('screen-title').innerText = "SYSTEM FAILURE";
-            document.getElementById('game-stats').style.display = 'block';
+            document.getElementById('game-stats').style.display = 'flex';
             document.getElementById('final-score').innerText = score;
             document.getElementById('death-reason').innerText = reason;
             document.getElementById('instructions').innerHTML = 'Press [J] to continue';
             document.getElementById('start-btn').innerText = "RETRY MISSION";
-            document.getElementById('start-btn').style.display = 'block';
+            document.getElementById('start-btn').style.display = 'flex';
             
-            gameOverScreen.style.display = 'block';
+            gameOverScreen.style.display = 'flex';
         }
 
         function drawPlayer() {
@@ -1468,7 +1464,7 @@ function spawnEnemy(timestamp) {
         resizeCanvas();
         
         // Show main menu on load
-        document.getElementById('game-over').style.display = 'block';
+        document.getElementById('game-over').style.display = 'flex';
         document.getElementById('virtual-keyboard').style.display = 'none';
         
         // Initialize defaults
@@ -1476,7 +1472,7 @@ function spawnEnemy(timestamp) {
         document.getElementById('pew-toggle').checked = true;
         document.getElementById('modal-bgmusic-toggle').checked = true;
         document.getElementById('modal-pew-toggle').checked = true;
-        document.getElementById('sound-on-icon').style.display = 'block';
+        document.getElementById('sound-on-icon').style.display = 'flex';
         document.getElementById('sound-off-icon').style.display = 'none';
 
     </script>
