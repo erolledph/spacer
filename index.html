@@ -779,6 +779,10 @@
                                     <div class="stat-label">FINAL SCORE</div>
                                     <div class="stat-value" id="final-score">0</div>
                                 </div>
+                                <div class="bento-item form-box">
+                                    <input type="text" id="player-name" placeholder="Your name" maxlength="15">
+                                    <button class="action-btn" id="submit-score-btn">SUBMIT</button>
+                                </div>
                             </div>
                             <div class="menu-buttons">
                                 <button class="menu-btn btn-play" id="start-btn">START MISSION</button>
@@ -1432,6 +1436,11 @@
             const rank = Math.max(1, 200 - Math.floor(score / 100));
             document.getElementById('final-rank').innerText = rank;
             document.getElementById('final-score').innerText = score;
+            
+            const nameInput = document.getElementById('player-name');
+            if (nameInput) {
+                nameInput.value = "Pilot_" + Math.floor(1000 + Math.random() * 9000);
+            }
             
             document.getElementById('instructions').innerHTML = 'Press [J] to continue';
             document.getElementById('start-btn').innerText = "RETRY MISSION";
