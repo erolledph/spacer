@@ -1650,6 +1650,9 @@ function drawPlayer() {
         
         function renderStartScreen() {
             if (isPlaying) return;
+            if (!isDemoMode) {
+                if (enemies.length === 0 && lasers.length === 0 && particles.length === 0) return;
+            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ffffff';
             stars.forEach(star => {
