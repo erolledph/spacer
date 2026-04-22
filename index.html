@@ -1473,8 +1473,8 @@
             const healthPercent = (Math.max(0, health) / maxHealth) * 100;
             hb.style.width = healthPercent + '%';
             
-            // Yellow bar color
-            hb.style.backgroundColor = '#ffff00';
+            // Yellow only if shield activated, otherwise green
+            hb.style.backgroundColor = shieldActivated ? '#ffff00' : '#00ff00';
         }
 
         function gameOver(reason) {
