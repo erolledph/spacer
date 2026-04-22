@@ -611,6 +611,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const container = document.getElementById('game-container');
+        let targetPlayerY = 0;
         
         function resizeCanvas() {
             canvas.width = container.clientWidth;
@@ -620,10 +621,14 @@
             const vkToggle = document.getElementById('vk-toggle');
             const vkEnabled = vkToggle ? vkToggle.checked : false;
             
-            if (vkEnabled) {
-                player.y = canvas.height - 200;
+            targetPlayerY = vkEnabled ? canvas.height - 200 : canvas.height - 40;
+        }
+        
+        function updatePlayerPosition() {
+            if (Math.abs(player.y - targetPlayerY) > 1) {
+                player.y += (targetPlayerY - player.y) * 0.15;
             } else {
-                player.y = canvas.height - 40;
+                player.y = targetPlayerY;
             }
         }
         window.addEventListener('resize', resizeCanvas);
@@ -856,6 +861,7 @@
             const vkEnabled = document.getElementById('vk-toggle').checked;
             
             document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
+            targetPlayerY = vkEnabled ? canvas.height - 200 : canvas.height - 40;
             
             score = 0;
             streak = 0;
@@ -1400,6 +1406,7 @@ function spawnEnemy(timestamp) {
                 }
             }
 
+            updatePlayerPosition();
             drawPlayer();
             ctx.restore();
             requestAnimationFrame(gameLoop);
