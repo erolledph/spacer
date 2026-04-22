@@ -1460,7 +1460,7 @@
             
             const hb = document.getElementById('health-bar');
             hb.style.width = Math.max(0, health) + '%';
-            if (shieldActivated) {
+            if (shieldActivated && health > 60) {
                 hb.style.backgroundColor = '#ffcc00';
             } else if (health <= 30) hb.style.backgroundColor = '#ff0055';
             else if (health <= 60) hb.style.backgroundColor = '#ffff00';
