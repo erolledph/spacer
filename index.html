@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Keyboard Ranger</title>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
         :root {
             --neon-blue: #00ffff;
             --neon-pink: #ff0055;
@@ -12,40 +19,63 @@
             --dark-bg: #050510;
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
+        body {
             background-color: var(--dark-bg);
             color: white;
             font-family: 'Courier New', Courier, monospace;
-            overflow-x: hidden;
-            overflow-y: hidden;
-            width: 100vw;
-            height: 100dvh;
-            touch-action: none;
+        }
+
+        #main-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (min-width: 768px) {
+            #main-container {
+                grid-template-columns: 1fr 3fr 1fr;
+            }
+        }
+
+        .ad-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, rgba(20,20,40,0.9), rgba(10,10,20,0.95));
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @media (min-width: 768px) {
+            .ad-section {
+                writing-mode: vertical-lr;
+            }
+        }
+
+        #game-section {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-left: 1px solid rgba(0,255,255,0.1);
+            border-right: 1px solid rgba(0,255,255,0.1);
         }
 
         #app-wrapper {
-            display: flex;
-            flex-direction: column;
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            height: 100dvh;
-            overflow: visible;
+            height: 100%;
+            position: relative;
         }
 
         #game-container {
-            position: relative;
-            flex: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            overflow: hidden;
-        }
-
-        #game-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
+            height: 100%;
         }
 
         canvas {
@@ -97,7 +127,6 @@
             justify-content: center;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
-            pointer-events: auto;
         }
 
         .top-icon-btn:hover { background: rgba(255, 255, 255, 0.2); }
@@ -135,9 +164,7 @@
             background: linear-gradient(to right, rgba(255,0,0,0.6), transparent);
         }
 
-        #red-overlay::before {
-            left: 0;
-        }
+        #red-overlay::before { left: 0; }
 
         #red-overlay::after {
             right: 0;
@@ -149,7 +176,6 @@
             100% { opacity: 0; }
         }
 
-        /* Health Bar */
         #health-container {
             position: absolute;
             top: 15px;
@@ -172,7 +198,7 @@
         }
 
         #game-over {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -180,9 +206,9 @@
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            display: none;
             align-items: center;
             justify-content: center;
-            display: none;
             pointer-events: auto;
             z-index: 10000;
         }
@@ -195,9 +221,8 @@
             box-shadow: 0 0 40px rgba(0,255,255,0.15), inset 0 0 30px rgba(0,255,255,0.03);
             width: 85%;
             max-width: 380px;
+            text-align: center;
         }
-
-        #game-over { display: flex; }
 
         #game-over h1 {
             color: var(--neon-blue);
@@ -280,17 +305,47 @@
             text-shadow: 0 0 15px var(--neon-blue);
         }
 
-        /* Pause Menu Styles */
-        .pause-menu {
-            background: linear-gradient(145deg, rgba(30,10,30,0.98), rgba(15,5,20,0.98)) !important;
-            border: 2px solid var(--neon-pink) !important;
-            box-shadow: 0 0 50px rgba(255,0,85,0.2), inset 0 0 40px rgba(255,0,85,0.03) !important;
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
         }
 
-        .pause-menu h2 {
-            color: var(--neon-pink) !important;
-            text-shadow: 0 0 20px var(--neon-pink) !important;
-            letter-spacing: 4px !important;
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(25,15,35,0.98), rgba(10,5,20,0.98));
+            border: 2px solid var(--neon-pink);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            width: 85%;
+            max-width: 340px;
+            box-shadow: 0 0 40px rgba(255,0,85,0.2), inset 0 0 20px rgba(255,0,85,0.05);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-content h2 { 
+            color: var(--neon-pink); 
+            margin: 0 0 20px 0; 
+            font-size: 24px;
+            text-shadow: 0 0 15px var(--neon-pink);
+            letter-spacing: 3px;
         }
 
         .settings-section {
@@ -308,14 +363,8 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .setting-item:last-child {
-            border-bottom: none;
-        }
-
-        .setting-item label {
-            color: #fff;
-            font-size: 14px;
-        }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-item label { color: #fff; font-size: 14px; }
 
         .setting-item input[type="range"] {
             flex: 1;
@@ -347,13 +396,6 @@
             color: var(--neon-pink);
             font-size: 12px;
         }
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        .btn-restart { background: var(--neon-green); color: #000; }
-        .btn-menu { background: var(--neon-pink); color: #fff; }
-        .btn-resume { background: var(--neon-blue); color: #000; }
-        .btn-start { background: var(--neon-blue); color: #000; }
 
         .action-btn {
             background-color: var(--neon-blue);
@@ -372,13 +414,9 @@
             letter-spacing: 1px;
         }
 
-        .action-btn:hover {
-            box-shadow: 0 0 15px currentColor;
-        }
-
+        .action-btn:hover { box-shadow: 0 0 15px currentColor; }
         .action-btn:active { transform: scale(0.97); }
 
-        /* Virtual Keyboard Styles */
         #virtual-keyboard {
             display: none;
             flex-shrink: 0;
@@ -394,7 +432,7 @@
             max-width: 600px;
             margin: 0 auto;
             box-sizing: border-box;
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
@@ -420,7 +458,6 @@
             background: linear-gradient(145deg, #2a2a3d, #1a1a28);
             border: 1px solid rgba(255,255,255,0.15);
             color: white;
-            border: 1px solid #444;
             border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             font-size: clamp(16px, 5vw, 22px);
@@ -454,85 +491,6 @@
             transform: translateY(2px);
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto;
-        }
-
-        .modal.show { display: flex; }
-
-        .modal-content {
-            background: linear-gradient(145deg, rgba(25,15,35,0.98), rgba(10,5,20,0.98));
-            border: 2px solid var(--neon-pink);
-            border-radius: 16px;
-            padding: 25px 20px;
-            text-align: center;
-            width: 85%;
-            max-width: 340px;
-            font-size: 16px;
-            box-shadow: 0 0 40px rgba(255,0,85,0.2), inset 0 0 20px rgba(255,0,85,0.05);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .modal-content h2 { 
-            color: var(--neon-pink); 
-            margin: 0 0 20px 0; 
-            font-size: 24px;
-            text-shadow: 0 0 15px var(--neon-pink);
-            letter-spacing: 3px;
-        }
-
-        .modal-content label {
-            display: block;
-            margin: 12px 0;
-            color: white;
-            font-size: 15px;
-        }
-
-        .modal-content input[type="range"] { width: 60%; }
-        
-        .modal-content .action-btn { width: 100%; }
-        
-        .settings-group {
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-        }
-        
-        .volume-label {
-            font-size: 14px;
-            color: #aaa !important;
-            margin-top: 5px;
-        }
-        
-        .volume-label input[type="range"] {
-            width: 50% !important;
-        }
-        
-        .settings-group {
-            margin: 8px 0;
-            padding: 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 6px;
-        }
-
         @media (max-width: 800px), (pointer: coarse) {
             #virtual-keyboard { display: flex; }
             .hud { top: 60px; }
@@ -544,110 +502,126 @@
 </head>
 <body>
 
-    <div id="app-wrapper">
-        <div id="app-wrapper">
-        <div id="game-container">
-            <canvas id="gameCanvas"></canvas>
-            <audio id="bg-music" loop>
-                <source src="The_Heavy_Orbit.mp3" type="audio/mpeg">
-            </audio>
-            <audio id="pew-sound">
-                <source src="pew.mp3" type="audio/mpeg">
-            </audio>
-            <div id="ui-layer">
-                <div id="health-container">
-                    <div id="health-bar"></div>
-                </div>
-                <div id="top-right-icons">
-                    <button class="top-icon-btn" id="sound-btn" title="Sound">
-                        <svg id="sound-on-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                        <svg id="sound-off-icon" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                    </button>
-                    <button class="top-icon-btn" id="settings-btn" title="Settings">
-                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                    </button>
-                </div>
-                <div class="hud" id="score-display">Score: <span id="score">0</span></div>
-                <div class="hud" id="multiplier-display">Streak: <span id="streak">0</span></div>
-            </div>
+    <!-- Semantic Grid Container -->
+    <main id="main-container">
+        
+        <!-- Section 1: Left Ad (hidden on mobile) -->
+        <section class="ad-section">
+            <span>Advertisement</span>
+        </section>
 
-<div id="red-overlay"></div>
+        <!-- Section 2: Game Container -->
+        <section id="game-section">
+            <div id="app-wrapper">
+                <div id="game-container">
+                    <canvas id="gameCanvas"></canvas>
+                    <audio id="bg-music" loop>
+                        <source src="The_Heavy_Orbit.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="pew-sound">
+                        <source src="pew.mp3" type="audio/mpeg">
+                    </audio>
+                    <div id="ui-layer">
+                        <div id="health-container">
+                            <div id="health-bar"></div>
+                        </div>
+                        <div id="top-right-icons">
+                            <button class="top-icon-btn" id="sound-btn" title="Sound">
+                                <svg id="sound-on-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                <svg id="sound-off-icon" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                            </button>
+                            <button class="top-icon-btn" id="settings-btn" title="Settings">
+                                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            </button>
+                        </div>
+                        <div class="hud" id="score-display">Score: <span id="score">0</span></div>
+                        <div class="hud" id="multiplier-display">Streak: <span id="streak">0</span></div>
+                    </div>
 
-<div id="settings-modal" class="modal">
-                <div class="modal-content pause-menu">
-                    <h2 id="settings-title">PAUSED</h2>
-                    <div class="settings-section">
-                        <div class="setting-item">
-                            <label><input type="checkbox" id="modal-bgmusic-toggle" checked> Background Music</label>
-                            <div class="range-row">
-                                <input type="range" id="modal-bg-volume" min="0" max="100" value="100">
-                                <span id="modal-bg-volume-value">100%</span>
+                    <div id="red-overlay"></div>
+
+                    <div id="settings-modal" class="modal">
+                        <div class="modal-content">
+                            <h2 id="settings-title">PAUSED</h2>
+                            <div class="settings-section">
+                                <div class="setting-item">
+                                    <label><input type="checkbox" id="modal-bgmusic-toggle" checked> Background Music</label>
+                                    <div class="range-row">
+                                        <input type="range" id="modal-bg-volume" min="0" max="100" value="100">
+                                        <span id="modal-bg-volume-value">100%</span>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <label><input type="checkbox" id="modal-pew-toggle" checked> Sound Effects</label>
+                                    <div class="range-row">
+                                        <input type="range" id="modal-pew-volume" min="0" max="100" value="100">
+                                        <span id="modal-pew-volume-value">100%</span>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Game Speed</label>
+                                    <div class="range-row">
+                                        <input type="range" id="modal-speed-slider" min="0.5" max="2" step="0.1" value="1">
+                                        <span id="modal-speed-value">100%</span>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <label><input type="checkbox" id="modal-vk-toggle" checked> Virtual Keyboard</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="setting-item">
-                            <label><input type="checkbox" id="modal-pew-toggle" checked> Sound Effects</label>
-                            <div class="range-row">
-                                <input type="range" id="modal-pew-volume" min="0" max="100" value="100">
-                                <span id="modal-pew-volume-value">100%</span>
+                            <div id="gameplay-buttons">
+                                <button class="action-btn" id="restart-btn">RESTART</button>
+                                <button class="action-btn" id="main-menu-btn">MAIN MENU</button>
                             </div>
-                        </div>
-                        <div class="setting-item">
-                            <label>Game Speed</label>
-                            <div class="range-row">
-                                <input type="range" id="modal-speed-slider" min="0.5" max="2" step="0.1" value="1">
-                                <span id="modal-speed-value">100%</span>
-                            </div>
-                        </div>
-                        <div class="setting-item">
-                            <label><input type="checkbox" id="modal-vk-toggle" checked> Virtual Keyboard</label>
+                            <button class="action-btn" id="close-settings">RESUME</button>
+                            <button class="action-btn" id="start-from-settings">START</button>
                         </div>
                     </div>
-                    <div id="gameplay-buttons">
-                        <button class="action-btn btn-restart" id="restart-btn">RESTART</button>
-                        <button class="action-btn btn-menu" id="main-menu-btn">MAIN MENU</button>
+                    
+                    <div id="game-over">
+                        <div class="main-menu">
+                            <h1 id="screen-title">KEYBOARD RANGER</h1>
+                            <div id="game-stats" style="display:none;">
+                                <div class="stat-box">
+                                    <span class="stat-label">FINAL SCORE</span>
+                                    <span class="stat-value" id="final-score">0</span>
+                                </div>
+                                <p id="death-reason"></p>
+                            </div>
+                            <div class="menu-buttons">
+                                <button class="menu-btn btn-play" id="start-btn">START MISSION</button>
+                                <button class="menu-btn btn-settings" id="menu-settings-btn">SETTINGS</button>
+                            </div>
+                            <p id="instructions">Type words to destroy invaders.<br><span style="color:var(--neon-pink)">Wrong letters = enemies shoot back!</span></p>
+                        </div>
                     </div>
-                    <button class="action-btn btn-resume" id="close-settings">RESUME</button>
-                    <button class="action-btn btn-start" id="start-from-settings">START</button>
+                    
+                    <!-- Hidden settings inputs -->
+                    <div id="settings-inputs" style="display:none;">
+                        <span id="bg-volume-value">100%</span>
+                        <span id="pew-volume-value">100%</span>
+                        <span id="speed-value">100%</span>
+                        <input type="checkbox" id="bgmusic-toggle" checked>
+                        <input type="checkbox" id="pew-toggle" checked>
+                        <input type="range" id="bg-volume" value="100">
+                        <input type="range" id="pew-volume" value="100">
+                        <input type="range" id="speed-slider" value="1">
+                        <input type="checkbox" id="vk-toggle" checked>
+                    </div>
+                </div>
+
+                <div id="virtual-keyboard">
+                    <!-- Generated by JS -->
                 </div>
             </div>
-            
-            <div id="game-over">
-                <div class="main-menu">
-                    <h1 id="screen-title">KEYBOARD RANGER</h1>
-                    <div id="game-stats" style="display:none;">
-                        <div class="stat-box">
-                            <span class="stat-label">FINAL SCORE</span>
-                            <span class="stat-value" id="final-score">0</span>
-                        </div>
-                        <p id="death-reason"></p>
-                    </div>
-                    <div class="menu-buttons">
-                        <button class="menu-btn btn-play" id="start-btn">START MISSION</button>
-                        <button class="menu-btn btn-settings" id="menu-settings-btn">SETTINGS</button>
-                    </div>
-                    <p id="instructions">Type words to destroy invaders.<br><span style="color:var(--neon-pink)">Wrong letters = enemies shoot back!</span></p>
-                </div>
-            </div>
-            
-            <!-- Hidden settings inputs for JS -->
-            <div id="settings-inputs" style="display:none;">
-                <span id="bg-volume-value">100%</span>
-                <span id="pew-volume-value">100%</span>
-                <span id="speed-value">100%</span>
-                <input type="checkbox" id="bgmusic-toggle" checked>
-                <input type="checkbox" id="pew-toggle" checked>
-                <input type="range" id="bg-volume" value="100">
-                <input type="range" id="pew-volume" value="100">
-                <input type="range" id="speed-slider" value="1">
-<input type="checkbox" id="vk-toggle" checked>
-            </div>
-        </div>
-        </div>
+        </section>
 
-        <div id="virtual-keyboard">
-            <!-- Keyboard generated by JS -->
-        </div>
-    </div>
+        <!-- Section 3: Right Ad (hidden on mobile) -->
+        <section class="ad-section">
+            <span>Advertisement</span>
+        </section>
+
+    </main>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -702,7 +676,6 @@
         const targetPath = new Path2D("M17.020 8h-2.045c-0.245-3.194-2.806-5.745-6.004-5.977v-2.062h-1v2.065c-3.172 0.258-5.702 2.799-5.946 5.974h-2.045v1h2.045c0.244 3.175 2.774 5.716 5.945 5.974v2.026h1v-2.023c3.198-0.231 5.759-2.782 6.004-5.977h2.045v-1zM8.971 13.977v-1.977h-1v1.974c-2.621-0.252-4.708-2.35-4.946-4.974h1.955v-1h-1.955c0.238-2.624 2.325-4.722 4.946-4.974v1.935h1v-1.938c2.647 0.227 4.764 2.333 5.004 4.977h-1.955v1h1.955c-0.24 2.644-2.357 4.75-5.004 4.977z");
         const spaceshipPath = new Path2D("M265 34l47.898 35.924 61.563 123.123-8.057 32.23-24.943-4.158 3.16-10.533 2.842-9.473L256 182.823l-91.463 18.29 6.002 20.006-24.943 4.156-8.057-32.228L199.1 69.926 247 34v56h-39l-16 32 64 38 64-38-16-32h-39zm188.313 169.258l30.3 10.101-13.478 29.205-30.016-5.001zm-394.626 0l13.194 34.304-30.016 5.002-13.478-29.205zM256 205.32l53.8 58.692L281.306 359h-50.61L202.2 264.012zm25.254.909l43.283 8.658-8.715 29.052zm-50.508.002l-34.568 37.709-8.715-29.053zm105.5 32.267L482.5 262.873 429.799 368.28 329.98 259.385zm-160.492 0l6.266 20.887L82.2 368.279 29.5 262.873zm148.205 40.96l72.201 78.765-84.556-37.582zm-135.918 0l12.355 41.183-84.556 37.582zm118.348 58.564l28.646 12.732L312.973 439H265v-62h29.695zm-100.778 0L217.305 377H247v62h-47.973l-22.062-88.246zM387.6 374.115l18.105 8.047-9.984 21.635-16.387-8.193zm-263.2 0l8.266 21.489-16.387 8.193-9.984-21.635zM311 457v30h-30v-30zm-80 0v30h-30v-30z");
 
-        // Game State Variables
         let isPlaying = false;
         let score = 0;
         let streak = 0;
@@ -838,7 +811,6 @@
                 return;
             }
             
-            // Press J to restart when game over
             if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'flex') {
                 startGame();
                 return;
@@ -942,15 +914,6 @@
             const soundBtn = document.getElementById('sound-btn');
             const settingsBtn = document.getElementById('settings-btn');
             const settingsModal = document.getElementById('settings-modal');
-            const closeSettings = document.getElementById('close-settings');
-            
-            // Safe function to add event listener
-            const safeAddEvent = (id, event, handler) => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener(event, handler);
-            };
-            
-            // Safe function to get element
             const safeGet = (id) => document.getElementById(id);
 
             function syncSettings() {
@@ -978,7 +941,7 @@
                 pewVolume = parseInt(pewVol) / 100;
             }
 
-            safeAddEvent('menu-settings-btn', 'click', () => {
+            safeGet('menu-settings-btn')?.addEventListener('click', () => {
                 syncSettings();
                 settingsModal.classList.add('show');
                 safeGet('gameplay-buttons').style.display = 'none';
@@ -987,22 +950,20 @@
                 safeGet('settings-title').innerText = 'SETTINGS';
             });
 
-            if (soundBtn) {
-                soundBtn.addEventListener('click', () => {
-                    bgMusicEnabled = !bgMusicEnabled;
-                    safeGet('bgmusic-toggle').checked = bgMusicEnabled;
-                    safeGet('modal-bgmusic-toggle').checked = bgMusicEnabled;
-                    updateSoundIcon();
-                    
-                    const bgMusic = safeGet('bg-music');
-                    if (bgMusicEnabled && isPlaying && bgMusic) {
-                        bgMusic.volume = bgVolume;
-                        bgMusic.play().catch(() => {});
-                    } else if (bgMusic) {
-                        bgMusic.pause();
-                    }
-                });
-            }
+            soundBtn?.addEventListener('click', () => {
+                bgMusicEnabled = !bgMusicEnabled;
+                safeGet('bgmusic-toggle').checked = bgMusicEnabled;
+                safeGet('modal-bgmusic-toggle').checked = bgMusicEnabled;
+                updateSoundIcon();
+                
+                const bgMusic = safeGet('bg-music');
+                if (bgMusicEnabled && isPlaying && bgMusic) {
+                    bgMusic.volume = bgVolume;
+                    bgMusic.play().catch(() => {});
+                } else if (bgMusic) {
+                    bgMusic.pause();
+                }
+            });
 
             function updateSoundIcon() {
                 const soundOn = safeGet('sound-on-icon');
@@ -1013,25 +974,23 @@
                 }
             }
 
-            if (settingsBtn) {
-                settingsBtn.addEventListener('click', () => {
-                    if (isPlaying) {
-                        isPlaying = false;
-                        settingsModal.classList.add('show');
-                        safeGet('gameplay-buttons').style.display = 'flex';
-                        safeGet('close-settings').style.display = 'flex';
-                        safeGet('start-from-settings').style.display = 'none';
-                        safeGet('settings-title').innerText = "PAUSED";
-                    }
-                });
-            }
+            settingsBtn?.addEventListener('click', () => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    settingsModal.classList.add('show');
+                    safeGet('gameplay-buttons').style.display = 'flex';
+                    safeGet('close-settings').style.display = 'flex';
+                    safeGet('start-from-settings').style.display = 'none';
+                    safeGet('settings-title').innerText = "PAUSED";
+                }
+            });
 
-            safeAddEvent('start-from-settings', 'click', () => {
+            safeGet('start-from-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
                 startGame();
             });
 
-            safeAddEvent('close-settings', 'click', () => {
+            safeGet('close-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
                 if (safeGet('game-over').style.display !== 'flex') {
                     isPlaying = true;
@@ -1051,26 +1010,7 @@
                 }
             });
 
-            safeAddEvent('modal-bgmusic-toggle', 'change', (e) => {
-                bgMusicEnabled = e.target.checked;
-                updateSoundIcon();
-                safeGet('bgmusic-toggle').checked = bgMusicEnabled;
-                
-                const bgMusic = safeGet('bg-music');
-                if (bgMusicEnabled && isPlaying && bgMusic) {
-                    bgMusic.volume = bgVolume;
-                    bgMusic.play().catch(() => {});
-                } else if (bgMusic) {
-                    bgMusic.pause();
-                }
-            });
-
-            safeAddEvent('modal-pew-toggle', 'change', (e) => {
-                pewSoundEnabled = e.target.checked;
-                safeGet('pew-toggle').checked = pewSoundEnabled;
-            });
-
-function toggleVirtualKeyboard(show) {
+            function toggleVirtualKeyboard(show) {
                 const vk = safeGet('virtual-keyboard');
                 if (show) {
                     vk.style.display = 'flex';
@@ -1091,19 +1031,19 @@ function toggleVirtualKeyboard(show) {
                 }
             }
 
-            safeAddEvent('modal-vk-toggle', 'change', (e) => {
+            safeGet('modal-vk-toggle')?.addEventListener('change', (e) => {
                 safeGet('vk-toggle').checked = e.target.checked;
                 toggleVirtualKeyboard(e.target.checked);
             });
 
-            safeAddEvent('modal-speed-slider', 'input', function() {
+            safeGet('modal-speed-slider')?.addEventListener('input', function() {
                 const value = parseFloat(this.value);
                 safeGet('modal-speed-value').textContent = Math.round(value * 100) + '%';
                 safeGet('speed-slider').value = value;
                 safeGet('speed-value').textContent = Math.round(value * 100) + '%';
             });
 
-            safeAddEvent('modal-bg-volume', 'input', function() {
+            safeGet('modal-bg-volume')?.addEventListener('input', function() {
                 bgVolume = parseInt(this.value) / 100;
                 safeGet('modal-bg-volume-value').textContent = this.value + '%';
                 safeGet('bg-volume').value = this.value;
@@ -1112,24 +1052,24 @@ function toggleVirtualKeyboard(show) {
                 if (bgMusic) bgMusic.volume = bgVolume;
             });
 
-            safeAddEvent('modal-pew-volume', 'input', function() {
+            safeGet('modal-pew-volume')?.addEventListener('input', function() {
                 pewVolume = parseInt(this.value) / 100;
                 safeGet('modal-pew-volume-value').textContent = this.value + '%';
                 safeGet('pew-volume').value = this.value;
                 safeGet('pew-volume-value').textContent = this.value + '%';
             });
 
-            safeAddEvent('bgmusic-toggle', 'change', (e) => {
+            safeGet('bgmusic-toggle')?.addEventListener('change', (e) => {
                 bgMusicEnabled = e.target.checked;
                 safeGet('modal-bgmusic-toggle').checked = bgMusicEnabled;
             });
 
-            safeAddEvent('pew-toggle', 'change', (e) => {
+            safeGet('pew-toggle')?.addEventListener('change', (e) => {
                 pewSoundEnabled = e.target.checked;
                 safeGet('modal-pew-toggle').checked = pewSoundEnabled;
             });
 
-            safeAddEvent('bg-volume', 'input', function() {
+            safeGet('bg-volume')?.addEventListener('input', function() {
                 bgVolume = parseInt(this.value) / 100;
                 safeGet('bg-volume-value').textContent = this.value + '%';
                 safeGet('modal-bg-volume').value = this.value;
@@ -1138,19 +1078,19 @@ function toggleVirtualKeyboard(show) {
                 if (bgMusic) bgMusic.volume = bgVolume;
             });
 
-            safeAddEvent('pew-volume', 'input', function() {
+            safeGet('pew-volume')?.addEventListener('input', function() {
                 pewVolume = parseInt(this.value) / 100;
                 safeGet('pew-volume-value').textContent = this.value + '%';
                 safeGet('modal-pew-volume').value = this.value;
                 safeGet('modal-pew-volume-value').textContent = this.value + '%';
             });
 
-            safeAddEvent('restart-btn', 'click', () => {
+            safeGet('restart-btn')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
                 startGame();
             });
 
-            safeAddEvent('main-menu-btn', 'click', () => {
+            safeGet('main-menu-btn')?.addEventListener('click', () => {
                 isPlaying = false;
                 const bgMusic = safeGet('bg-music');
                 if (bgMusic) bgMusic.pause();
@@ -1161,12 +1101,12 @@ function toggleVirtualKeyboard(show) {
                 safeGet('start-btn').innerText = "START MISSION";
             });
 
-            safeAddEvent('start-btn', 'click', () => {
+            safeGet('start-btn')?.addEventListener('click', () => {
                 startGame();
             });
-}
+        }
 
-function spawnEnemy(timestamp) {
+        function spawnEnemy(timestamp) {
             if (waveBreak) return;
             
             if (enemiesSpawned >= enemiesPerWave && enemies.length === 0) {
@@ -1301,7 +1241,6 @@ function spawnEnemy(timestamp) {
             ctx.fill(spaceshipPath);
             ctx.restore();
             
-            // Draw flame
             ctx.fillStyle = '#ff4500';
             ctx.beginPath();
             ctx.ellipse(player.x, player.y + 5, 3, 8 + Math.sin(Date.now() * 0.01) * 2, 0, 0, Math.PI * 2);
@@ -1358,7 +1297,6 @@ function spawnEnemy(timestamp) {
                 const scale = 1;
                 const targetY = enemy.y - 11;
                 
-                // Draw target icon only if NOT a heart bonus enemy
                 if (!enemy.hasHeart) {
                     ctx.save();
                     ctx.translate(enemy.x - 8.5 * scale, targetY - 8.5 * scale);
@@ -1377,7 +1315,6 @@ function spawnEnemy(timestamp) {
                         ctx.restore();
                     }
                 } else {
-                    // Draw heart icon above word for bonus enemy
                     ctx.save();
                     ctx.translate(enemy.x - 10, enemy.y - 22);
                     ctx.scale(0.45, 0.45);
@@ -1477,11 +1414,9 @@ function spawnEnemy(timestamp) {
         setupTopLeftIcons();
         resizeCanvas();
         
-        // Show main menu on load
         document.getElementById('game-over').style.display = 'flex';
         document.getElementById('virtual-keyboard').style.display = 'none';
         
-        // Initialize defaults
         document.getElementById('bgmusic-toggle').checked = true;
         document.getElementById('pew-toggle').checked = true;
         document.getElementById('modal-bgmusic-toggle').checked = true;
