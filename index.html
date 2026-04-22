@@ -1597,13 +1597,15 @@
             isPlaying = false;
         }
 
-        document.getElementById('submit-score-btn')?.addEventListener('click', function() {
+        document.getElementById('submit-score-btn')?.addEventListener('click', function(e) {
+            e.stopPropagation();
             const playerName = document.getElementById('player-name')?.value || 'Anonymous';
             const finalScore = score;
             
             this.innerText = 'SUCCEED!';
             this.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
             this.style.boxShadow = '0 0 25px rgba(0,255,0,0.5)';
+            this.disabled = true;
             
             setTimeout(() => {
                 alert(`Score succeeded!\n\nName: ${playerName}\nScore: ${finalScore}\n\n(Webhook/POST not implemented yet)`);
@@ -1935,7 +1937,10 @@
         document.getElementById('sound-off-icon').style.display = 'none';
 
         document.getElementById('game-container').addEventListener('click', function(e) {
-            if (!isPlaying && e.target.id !== 'shield-promo') {
+            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'settings-modal', 'game-over'];
+            const isExcluded = excludeIds.some(id => e.target.id === id || e.target.closest(`#${id}`));
+            
+            if (!isPlaying && !isExcluded) {
                 isDemoMode = false;
                 document.getElementById('start-prompt').style.display = 'none';
                 startGame();
