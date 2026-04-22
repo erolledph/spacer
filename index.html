@@ -1112,8 +1112,8 @@
             enemiesSpawned = 0;
             enemiesPerWave = 5;
             waveBreak = false;
-            spawnRate = 1800; 
-            baseSpeed = (canvas.height / 1200) * speedMultiplier; 
+            spawnRate = 1200; 
+            baseSpeed = (canvas.height / 1000) * speedMultiplier * 1.5; 
             isPlaying = true;
             
             const bgMusic = document.getElementById('bg-music');
@@ -1332,8 +1332,8 @@
             if (enemiesSpawned >= enemiesPerWave && enemies.length === 0) {
                 currentWave++;
                 enemiesSpawned = 0;
-                enemiesPerWave = Math.min(5 + (currentWave - 1) * 3, 25);
-                spawnRate = Math.max(1800 - (currentWave * 150), 600);
+                enemiesPerWave = Math.min(5 + (currentWave - 1) * 2, 20);
+                spawnRate = Math.max(1200 - (currentWave * 80), 500);
                 waveBreak = true;
                 setTimeout(() => {
                     waveBreak = false;
@@ -1371,7 +1371,7 @@
                     enemiesSpawned++;
                     lastSpawn = timestamp;
                     
-                    if (spawnRate > 400) spawnRate -= 15;
+                    if (spawnRate > 500) spawnRate -= 8;
                     baseSpeed += 0.003;
                 }
             }
