@@ -364,6 +364,27 @@
             text-align: center;
         }
 
+        #shield-promo {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #shield-promo:hover {
+            background: rgba(255,200,0,0.15);
+        }
+
+        #shield-promo.activated {
+            background: rgba(0,255,0,0.15);
+        }
+
+        #shield-promo.activated .stat-value {
+            color: var(--neon-green);
+        }
+
+        #shield-status {
+            font-size: 14px;
+        }
+
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -793,6 +814,10 @@
                                     <div class="stat-label">FINAL SCORE</div>
                                     <div class="stat-value" id="final-score">0</div>
                                 </div>
+                                <div id="shield-promo" class="bento-item stat-box" style="grid-column:1/-1;cursor:pointer;">
+                                    <div class="stat-label">SHIELD BONUS</div>
+                                    <div class="stat-value" id="shield-status">Click to get 2x Shield</div>
+                                </div>
                                 <div class="bento-item form-box">
                                     <input type="text" id="player-name" placeholder="Your name" maxlength="15">
                                     <button class="action-btn" id="submit-score-btn">SUBMIT</button>
@@ -892,6 +917,7 @@
         let score = 0;
         let streak = 0;
         let health = 100;
+        let shieldActivated = false;
         let enemies = [];
         let stars = [];
         let lasers = [];
@@ -1101,7 +1127,7 @@
             
             score = 0;
             streak = 0;
-            health = 100;
+            health = shieldActivated ? 200 : 100;
             enemies = [];
             lasers = [];
             enemyProjectiles = [];
@@ -1440,6 +1466,9 @@
         function gameOver(reason) {
             isPlaying = false;
             isDemoMode = false;
+            shieldActivated = false;
+            document.getElementById('shield-promo').classList.remove('activated');
+            document.getElementById('shield-status').innerText = 'Click to get 2x Shield';
             // Keep music playing
             // Don't pause bg-music
             document.getElementById('spaceship-sprite').style.display = 'none';
@@ -1808,6 +1837,14 @@
                 document.getElementById('start-prompt').style.display = 'none';
                 startGame();
             }
+        });
+
+        document.getElementById('shield-promo')?.addEventListener('click', function() {
+            if (shieldActivated) return;
+            shieldActivated = true;
+            document.getElementById('shield-promo').classList.add('activated');
+            document.getElementById('shield-status').innerText = 'SHIELD ACTIVE - 2X HEALTH';
+            window.open('https://example.com', '_blank');
         });
 
     </script>
