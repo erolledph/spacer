@@ -759,7 +759,14 @@
                         </div>
                     </div>
                     
-                    <div id="game-over">
+                    <div id="start-prompt" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;text-align:center;pointer-events:none;">
+                                <div style="color:#00ffff;font-size:24px;font-weight:bold;animation:blink 1s infinite;">CLICK TO START</div>
+                                <div style="color:#888;font-size:14px;margin-top:10px;">or press SPACE</div>
+                            </div>
+                            
+                            <style>@keyframes blink { 50% { opacity: 0.3; } }</style>
+                            
+                            <div id="game-over" style="display:none;">
                         <div class="main-menu">
                             <h1 id="screen-title">KEYBOARD RANGER</h1>
                             <p class="subtitle">Space Typing Defense</p>
@@ -979,6 +986,11 @@
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Enter' || e.code === 'Space') {
                 e.preventDefault();
+                if (!isPlaying && !document.getElementById('settings-modal').classList.contains('show')) {
+                    document.getElementById('start-prompt').style.display = 'none';
+                    startGame();
+                    return;
+                }
                 if (isPlaying) {
                     isPlaying = false;
                     document.getElementById('settings-modal').classList.add('show');
@@ -1048,6 +1060,7 @@
 
         function startGame() {
             document.getElementById('game-over').style.display = 'none';
+            document.getElementById('start-prompt').style.display = 'none';
             resizeCanvas();
             initStars();
             
@@ -1625,7 +1638,7 @@ function drawPlayer() {
         setupTopLeftIcons();
         resizeCanvas();
         
-        document.getElementById('game-over').style.display = 'flex';
+        document.getElementById('game-over').style.display = 'none';
         document.getElementById('virtual-keyboard').style.display = 'none';
         
         document.getElementById('bgmusic-toggle').checked = true;
@@ -1634,6 +1647,13 @@ function drawPlayer() {
         document.getElementById('modal-pew-toggle').checked = true;
         document.getElementById('sound-on-icon').style.display = 'flex';
         document.getElementById('sound-off-icon').style.display = 'none';
+
+        document.getElementById('game-container').addEventListener('click', function() {
+            if (!isPlaying) {
+                document.getElementById('start-prompt').style.display = 'none';
+                startGame();
+            }
+        });
 
     </script>
 </body>
