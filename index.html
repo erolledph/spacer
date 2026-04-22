@@ -1162,11 +1162,12 @@
         let bgVolume = 1;
         let pewVolume = 1;
 
+        function safeGet(id) { return document.getElementById(id); }
+
         function setupTopLeftIcons() {
             const soundBtn = document.getElementById('sound-btn');
             const settingsBtn = document.getElementById('settings-btn');
             const settingsModal = document.getElementById('settings-modal');
-            const safeGet = (id) => document.getElementById(id);
 
             function syncSettings() {
                 const bgEl = safeGet('bgmusic-toggle');
