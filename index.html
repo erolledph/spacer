@@ -616,7 +616,15 @@
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             player.x = canvas.width / 2;
-            player.y = canvas.height - 40;
+            
+            const vkToggle = document.getElementById('vk-toggle');
+            const vkEnabled = vkToggle ? vkToggle.checked : false;
+            
+            if (vkEnabled) {
+                player.y = canvas.height - 150;
+            } else {
+                player.y = canvas.height - 40;
+            }
         }
         window.addEventListener('resize', resizeCanvas);
 
