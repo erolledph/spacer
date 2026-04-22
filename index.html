@@ -1831,15 +1831,16 @@
         document.getElementById('sound-on-icon').style.display = 'flex';
         document.getElementById('sound-off-icon').style.display = 'none';
 
-        document.getElementById('game-container').addEventListener('click', function() {
-            if (!isPlaying) {
+        document.getElementById('game-container').addEventListener('click', function(e) {
+            if (!isPlaying && e.target.id !== 'shield-promo') {
                 isDemoMode = false;
                 document.getElementById('start-prompt').style.display = 'none';
                 startGame();
             }
         });
 
-        document.getElementById('shield-promo')?.addEventListener('click', function() {
+        document.getElementById('shield-promo')?.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (shieldActivated) return;
             shieldActivated = true;
             document.getElementById('shield-promo').classList.add('activated');
