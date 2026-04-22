@@ -1710,6 +1710,9 @@ function drawPlayer() {
                 enemy.y += enemy.speed;
                 
                 if (enemy.y > canvas.height - 40) {
+                    if (!isDemoMode) {
+                        return gameOver("An invader breached your defenses!");
+                    }
                     enemies.splice(i, 1);
                     continue;
                 }
