@@ -536,9 +536,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             width: 100%;
             text-align: center;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,255,255,0.15);
         }
 
         .form-box input {
@@ -925,7 +928,7 @@
                                     <div class="stat-label">SHIELD BONUS</div>
                                     <div class="stat-value" id="shield-status">Click to get 2x Shield</div>
                                 </div>
-                                <div class="bento-item form-box">
+                                <div class="bento-item form-box" style="grid-column:1/-1;">
                                     <input type="text" id="player-name" placeholder="Your name" maxlength="15">
                                     <button class="action-btn" id="submit-score-btn">SUBMIT</button>
                                 </div>
