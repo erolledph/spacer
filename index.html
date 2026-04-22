@@ -1112,7 +1112,7 @@
             enemiesSpawned = 0;
             enemiesPerWave = 5;
             waveBreak = false;
-            spawnRate = 2200; 
+            spawnRate = 1800; 
             baseSpeed = (canvas.height / 1200) * speedMultiplier; 
             isPlaying = true;
             
@@ -1333,7 +1333,7 @@
                 currentWave++;
                 enemiesSpawned = 0;
                 enemiesPerWave = Math.min(5 + (currentWave - 1) * 3, 25);
-                spawnRate = Math.max(2000 - (currentWave * 100), 800);
+                spawnRate = Math.max(1800 - (currentWave * 150), 600);
                 waveBreak = true;
                 setTimeout(() => {
                     waveBreak = false;
@@ -1371,7 +1371,7 @@
                     enemiesSpawned++;
                     lastSpawn = timestamp;
                     
-                    if (spawnRate > 600) spawnRate -= 10;
+                    if (spawnRate > 400) spawnRate -= 15;
                     baseSpeed += 0.003;
                 }
             }
