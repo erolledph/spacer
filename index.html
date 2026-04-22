@@ -193,6 +193,11 @@
             100% { opacity: 0; }
         }
 
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         #health-container {
             position: absolute;
             top: 15px;
@@ -1324,7 +1329,7 @@
             const warning = document.createElement('div');
             warning.id = 'long-word-warning';
             warning.innerText = '⚠️ WARNING\nincoming long word';
-            warning.style.cssText = 'position:absolute;top:45px;left:50%;transform:translateX(-50%);color:#ff6644;font-size:14px;font-weight:bold;text-shadow:0 0 8px #aa2200;z-index:180;pointer-events:none;white-space:pre;';
+            warning.style.cssText = 'position:absolute;top:45px;left:50%;transform:translateX(-50%);color:#ff6644;font-size:14px;font-weight:bold;text-shadow:0 0 8px #aa2200;z-index:180;pointer-events:none;white-space:pre;animation:blink 0.2s ease-in-out infinite;';
             
             document.getElementById('game-container').appendChild(warning);
             setTimeout(() => warning.remove(), 1200);
