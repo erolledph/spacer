@@ -23,6 +23,10 @@
             background-color: var(--dark-bg);
             color: white;
             font-family: 'Courier New', Courier, monospace;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         #main-container {
@@ -62,6 +66,18 @@
             overflow: hidden;
             border-left: 1px solid rgba(0,255,255,0.1);
             border-right: 1px solid rgba(0,255,255,0.1);
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        #game-section * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         #app-wrapper {
