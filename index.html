@@ -870,6 +870,7 @@
         const spaceshipPath = new Path2D("M265 34l47.898 35.924 61.563 123.123-8.057 32.23-24.943-4.158 3.16-10.533 2.842-9.473L256 182.823l-91.463 18.29 6.002 20.006-24.943 4.156-8.057-32.228L199.1 69.926 247 34v56h-39l-16 32 64 38 64-38-16-32h-39zm188.313 169.258l30.3 10.101-13.478 29.205-30.016-5.001zm-394.626 0l13.194 34.304-30.016 5.002-13.478-29.205zM256 205.32l53.8 58.692L281.306 359h-50.61L202.2 264.012zm25.254.909l43.283 8.658-8.715 29.052zm-50.508.002l-34.568 37.709-8.715-29.053zm105.5 32.267L482.5 262.873 429.799 368.28 329.98 259.385zm-160.492 0l6.266 20.887L82.2 368.279 29.5 262.873zm148.205 40.96l72.201 78.765-84.556-37.582zm-135.918 0l12.355 41.183-84.556 37.582zm118.348 58.564l28.646 12.732L312.973 439H265v-62h29.695zm-100.778 0L217.305 377H247v62h-47.973l-22.062-88.246zM387.6 374.115l18.105 8.047-9.984 21.635-16.387-8.193zm-263.2 0l8.266 21.489-16.387 8.193-9.984-21.635zM311 457v30h-30v-30zm-80 0v30h-30v-30z");
 
         let isPlaying = false;
+        let isDemoMode = true;
         let score = 0;
         let streak = 0;
         let health = 100;
@@ -1421,6 +1422,7 @@
 
         function gameOver(reason) {
             isPlaying = false;
+            isDemoMode = false;
             document.getElementById('bg-music').pause();
             document.getElementById('spaceship-sprite').style.display = 'none';
             const gameOverScreen = document.getElementById('game-over');
@@ -1660,8 +1662,99 @@ function drawPlayer() {
                 ctx.fillRect(star.x, star.y, star.size, star.size);
             });
             ctx.globalAlpha = 1.0;
+            
+            if (isDemoMode) {
+                spawnDemoEnemy();
+                if (enemies.length > 0) {
+                    const target = currentTarget || enemies[0];
+                    if (target) {
+                        currentTarget = target;
+                        const letter = target.word[target.typed];
+                        handleInput(letter);
+                    }
+                }
+            }
+            
             drawPlayer();
+            drawEnemies();
+            drawLasers();
+            drawParticles();
+            
             requestAnimationFrame(renderStartScreen);
+        }
+        
+        let lastDemoSpawn = 0;
+        function spawnDemoEnemy() {
+            const now = Date.now();
+            if (now - lastDemoSpawn > 1200) {
+                const word = wordList[Math.floor(Math.random() * wordList.length)];
+                const margin = 60;
+                enemies.push({
+                    word: word,
+                    typed: 0,
+                    x: Math.random() * (canvas.width - margin * 2) + margin,
+                    y: -30,
+                    speed: 0.5,
+                    hasHeart: false
+                });
+                lastDemoSpawn = now;
+            }
+        }
+        
+        function drawEnemies() {
+            const fontSize = Math.max(12, Math.min(16, canvas.width / 28));
+            ctx.textAlign = 'center';
+            
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                let enemy = enemies[i];
+                enemy.y += enemy.speed;
+                
+                if (enemy.y > canvas.height - 40) {
+                    enemies.splice(i, 1);
+                    continue;
+                }
+                
+                const targetY = enemy.y - 17;
+                const scale = 1;
+                
+                ctx.save();
+                ctx.translate(enemy.x - 8.5 * scale, targetY - 8.5 * scale);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill(targetPath);
+                ctx.restore();
+                
+                ctx.font = `bold ${fontSize}px "Courier New"`;
+                const typedPart = enemy.word.substring(0, enemy.typed);
+                const untypedPart = enemy.word.substring(enemy.typed);
+                const typedWidth = ctx.measureText(typedPart).width;
+                const totalWidth = typedWidth + ctx.measureText(untypedPart).width;
+                const startX = enemy.x - totalWidth / 2;
+                
+                ctx.fillStyle = '#00ff00';
+                ctx.textAlign = 'left';
+                ctx.fillText(typedPart, startX, enemy.y + 5);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(untypedPart, startX + typedWidth, enemy.y + 5);
+            }
+        }
+        
+        function drawLasers() {
+            for (let i = lasers.length - 1; i >= 0; i--) {
+                lasers[i].progress += 0.25;
+                if (lasers[i].progress >= 1) {
+                    lasers.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].life -= 0.05;
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
         }
         renderStartScreen();
         
@@ -1674,6 +1767,7 @@ function drawPlayer() {
 
         document.getElementById('game-container').addEventListener('click', function() {
             if (!isPlaying) {
+                isDemoMode = false;
                 document.getElementById('start-prompt').style.display = 'none';
                 startGame();
             }
