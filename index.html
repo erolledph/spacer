@@ -1118,7 +1118,10 @@
             const bgMusic = document.getElementById('bg-music');
             if (bgMusicEnabled) {
                 bgMusic.volume = bgVolume;
-                bgMusic.play().catch(() => {});
+                if (bgMusic.paused) {
+                    bgMusic.currentTime = 0;
+                    bgMusic.play().catch(() => {});
+                }
             }
             
             updateUI();
@@ -1178,11 +1181,8 @@
                 updateSoundIcon();
                 
                 const bgMusic = safeGet('bg-music');
-                if (bgMusicEnabled && isPlaying && bgMusic) {
-                    bgMusic.volume = bgVolume;
+                if (bgMusicEnabled && isPlaying && bgMusic && bgMusic.paused) {
                     bgMusic.play().catch(() => {});
-                } else if (bgMusic) {
-                    bgMusic.pause();
                 }
             });
 
@@ -1313,8 +1313,6 @@
 
             safeGet('main-menu-btn')?.addEventListener('click', () => {
                 isPlaying = false;
-                const bgMusic = safeGet('bg-music');
-                if (bgMusic) bgMusic.pause();
                 settingsModal.classList.remove('show');
                 safeGet('game-over').style.display = 'flex';
                 safeGet('game-stats').style.display = 'none';
@@ -1441,7 +1439,8 @@
         function gameOver(reason) {
             isPlaying = false;
             isDemoMode = false;
-            document.getElementById('bg-music').pause();
+            // Keep music playing
+            // Don't pause bg-music
             document.getElementById('spaceship-sprite').style.display = 'none';
             
             document.getElementById('screen-title').innerText = "SYSTEM FAILURE";
