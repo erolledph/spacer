@@ -366,9 +366,8 @@
         }
 
         .bento-grid {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin: 20px 0;
             width: 100%;
@@ -376,6 +375,7 @@
         }
 
         #game-stats .form-box {
+            grid-column: 1 / -1;
             width: 100%;
         }
 
