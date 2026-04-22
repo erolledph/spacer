@@ -374,6 +374,10 @@
             box-sizing: border-box;
         }
 
+        #game-stats.bento-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
         #game-stats .form-box {
             grid-column: 1 / -1;
             width: 100%;
@@ -774,7 +778,7 @@
                         <div class="main-menu">
                             <h1 id="screen-title">KEYBOARD RANGER</h1>
                             <p class="subtitle">Space Typing Defense</p>
-                            <div id="game-stats" class="bento-grid" style="display:none;">
+                            <div id="game-stats" class="bento-grid" style="display:grid; grid-template-columns:1fr 1fr;">
                                 <div class="bento-item stat-box">
                                     <div class="stat-label">RANK</div>
                                     <div class="stat-value" id="final-rank">-</div>
@@ -1435,7 +1439,7 @@
             document.getElementById('spaceship-sprite').style.display = 'none';
             
             document.getElementById('screen-title').innerText = "SYSTEM FAILURE";
-            document.getElementById('game-stats').style.display = 'flex';
+            document.getElementById('game-stats').style.display = 'grid';
             
             const rank = Math.max(1, 200 - Math.floor(score / 100));
             document.getElementById('final-rank').innerText = rank;
