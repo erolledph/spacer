@@ -269,6 +269,10 @@
             letter-spacing: 3px;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .btn-play {
@@ -371,9 +375,14 @@
         .modal-content h2 { 
             color: var(--neon-pink); 
             margin: 0 0 20px 0; 
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: 700;
             text-shadow: 0 0 15px var(--neon-pink);
             letter-spacing: 3px;
+            text-align: center;
+            display: block;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .settings-section {
@@ -392,7 +401,12 @@
         }
 
         .setting-item:last-child { border-bottom: none; }
-        .setting-item label { color: #fff; font-size: 14px; }
+        .setting-item label { 
+            color: #fff; 
+            font-size: 14px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
 
         .setting-item input[type="range"] {
             flex: 1;
@@ -415,34 +429,41 @@
         .range-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
         }
 
         .range-row span {
-            min-width: 40px;
-            text-align: right;
+            min-width: 45px;
+            text-align: center;
             color: var(--neon-pink);
-            font-size: 12px;
+            font-size: 13px;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .action-btn {
             background-color: var(--neon-blue);
             color: #000;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 20px;
             font-size: 14px;
-            font-family: inherit;
-            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: transform 0.1s, box-shadow 0.2s;
             width: 100%;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .action-btn:hover { box-shadow: 0 0 15px currentColor; }
+        .action-btn:hover { box-shadow: 0 0 20px rgba(0,255,255,0.5); }
         .action-btn:active { transform: scale(0.97); }
 
         #virtual-keyboard {
