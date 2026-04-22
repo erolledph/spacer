@@ -215,16 +215,25 @@
         #health-bar-background {
             width: 100%;
             height: 100%;
-            background-color: var(--neon-green);
             position: relative;
+            display: flex;
         }
 
         #health-bar {
+            height: 100%;
+            transition: width 0.2s, background-color 0.2s;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        #shield-bar {
             height: 100%;
             background-color: #ffff00;
             transition: width 0.2s;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         #game-over {
@@ -749,6 +758,7 @@
                         <div id="health-container">
                             <div id="health-bar-background">
                                 <div id="health-bar"></div>
+                                <div id="shield-bar"></div>
                             </div>
                         </div>
                         <div id="top-right-icons">
@@ -1469,12 +1479,32 @@
             document.getElementById('streak').innerText = streak;
             
             const hb = document.getElementById('health-bar');
-            const maxHealth = shieldActivated ? 200 : 100;
-            const healthPercent = (Math.max(0, health) / maxHealth) * 100;
-            hb.style.width = healthPercent + '%';
+            const sb = document.getElementById('shield-bar');
             
-            // Yellow only if shield activated, otherwise green
-            hb.style.backgroundColor = shieldActivated ? '#ffff00' : '#00ff00';
+            // Green bar: 0-100 health
+            const greenPercent = (Math.max(0, Math.min(health, 100)) / 100) * 100;
+            hb.style.width = greenPercent + '%';
+            
+            // Green bar color changes based on health percentage
+            const healthPercent = (Math.max(0, Math.min(health, 100)) / 100) * 100;
+            if (healthPercent <= 30) {
+                hb.style.backgroundColor = '#ff0055'; // Red
+            } else if (healthPercent <= 60) {
+                hb.style.backgroundColor = '#ffff00'; // Yellow
+            } else {
+                hb.style.backgroundColor = '#00ff00'; // Green
+            }
+            
+            // Yellow shield bar: shows extra 100-200 health if shield activated
+            if (shieldActivated && health > 100) {
+                const shieldHealth = Math.min(health - 100, 100);
+                const shieldPercent = (shieldHealth / 100) * 100;
+                sb.style.width = shieldPercent + '%';
+                sb.style.display = 'block';
+            } else {
+                sb.style.width = '0%';
+                sb.style.display = 'none';
+            }
         }
 
         function gameOver(reason) {
