@@ -166,16 +166,17 @@
         }
 
         #game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
             pointer-events: auto;
-            width: 85%;
-            max-width: 380px;
-            z-index: 200;
         }
 
         .main-menu {
@@ -616,7 +617,15 @@
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             player.x = canvas.width / 2;
-            player.y = canvas.height - 40;
+
+            const vkEnabled = document.getElementById('vk-toggle') ? document.getElementById('vk-toggle').checked : false;
+            const isVkVisible = document.getElementById('virtual-keyboard').style.display === 'flex';
+            if (isVkVisible) {
+                 // move it a bit to the middle
+                 player.y = canvas.height - 150;
+            } else {
+                 player.y = canvas.height - 40;
+            }
         }
         window.addEventListener('resize', resizeCanvas);
 
@@ -777,14 +786,14 @@
                     document.getElementById('settings-modal').classList.remove('show');
                     isPlaying = true;
                     const vkEnabled = document.getElementById('vk-toggle').checked;
-                    document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
+                    document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none'; resizeCanvas();
                     requestAnimationFrame(gameLoop);
                 }
                 return;
             }
             
             // Press J to restart when game over
-            if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'block') {
+            if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'flex') {
                 startGame();
                 return;
             }
@@ -847,7 +856,7 @@
             const speedMultiplier = parseFloat(document.getElementById('speed-slider').value);
             const vkEnabled = document.getElementById('vk-toggle').checked;
             
-            document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
+            document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none'; resizeCanvas();
             
             score = 0;
             streak = 0;
@@ -977,10 +986,10 @@
 
             safeAddEvent('close-settings', 'click', () => {
                 settingsModal.classList.remove('show');
-                if (safeGet('game-over').style.display !== 'block') {
+                if (safeGet('game-over').style.display !== 'flex') {
                     isPlaying = true;
                     const vkEnabled = safeGet('vk-toggle').checked;
-                    safeGet('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
+                    safeGet('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none'; resizeCanvas();
                     requestAnimationFrame(gameLoop);
                 }
             });
@@ -988,10 +997,10 @@
             settingsModal.addEventListener('click', (e) => {
                 if (e.target === settingsModal) {
                     settingsModal.classList.remove('show');
-                    if (safeGet('game-over').style.display !== 'block') {
+                    if (safeGet('game-over').style.display !== 'flex') {
                         isPlaying = true;
                         const vkEnabled = safeGet('vk-toggle').checked;
-                        safeGet('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
+                        safeGet('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none'; resizeCanvas();
                         requestAnimationFrame(gameLoop);
                     }
                 }
@@ -1018,7 +1027,7 @@
 
             safeAddEvent('modal-vk-toggle', 'change', (e) => {
                 safeGet('vk-toggle').checked = e.target.checked;
-                safeGet('virtual-keyboard').style.display = e.target.checked ? 'flex' : 'none';
+                safeGet('virtual-keyboard').style.display = e.target.checked ? 'flex' : 'none'; resizeCanvas();
             });
 
             safeAddEvent('modal-speed-slider', 'input', function() {
@@ -1080,7 +1089,7 @@
                 const bgMusic = safeGet('bg-music');
                 if (bgMusic) bgMusic.pause();
                 settingsModal.classList.remove('show');
-                safeGet('game-over').style.display = 'block';
+                safeGet('game-over').style.display = 'flex';
                 safeGet('game-stats').style.display = 'none';
                 safeGet('screen-title').innerText = "KEYBOARD RANGER";
                 safeGet('start-btn').innerText = "START MISSION";
@@ -1215,7 +1224,7 @@ function spawnEnemy(timestamp) {
             document.getElementById('start-btn').innerText = "RETRY MISSION";
             document.getElementById('start-btn').style.display = 'block';
             
-            gameOverScreen.style.display = 'block';
+            gameOverScreen.style.display = 'flex';
         }
 
         function drawPlayer() {
@@ -1402,7 +1411,7 @@ function spawnEnemy(timestamp) {
         resizeCanvas();
         
         // Show main menu on load
-        document.getElementById('game-over').style.display = 'block';
+        document.getElementById('game-over').style.display = 'flex';
         document.getElementById('virtual-keyboard').style.display = 'none';
         
         // Initialize defaults
