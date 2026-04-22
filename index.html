@@ -1423,7 +1423,17 @@
 
         function drawPlayer() {
             ctx.save();
-            ctx.translate(player.x - 256 * 0.08, player.y - 20 - 256 * 0.08);
+            
+            let rotation = 0;
+            if (currentTarget) {
+                const dx = currentTarget.x - player.x;
+                const dy = currentTarget.y - player.y;
+                rotation = Math.atan2(dx, dy) * 0.15;
+                rotation = Math.max(-0.3, Math.min(0.3, rotation));
+            }
+            
+            ctx.translate(player.x, player.y);
+            ctx.rotate(rotation);
             ctx.scale(0.08, 0.08);
             ctx.fillStyle = '#00ffff';
             ctx.fill(spaceshipPath);
