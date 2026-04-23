@@ -1198,7 +1198,6 @@
                     return;
                 }
                 if (isPlaying) {
-                    gameLoopRunning = false;
                     isPlaying = false;
                     wasPlayingBeforePause = true;
                     document.getElementById('settings-modal').classList.add('show');
@@ -1358,6 +1357,26 @@
                 pewVolume = parseInt(pewVol) / 100;
             }
 
+            settingsBtn?.addEventListener('click', () => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    wasPlayingBeforePause = true;
+                    document.getElementById('settings-modal').classList.add('show');
+                    document.getElementById('gameplay-buttons').style.display = 'flex';
+                    document.getElementById('close-settings').style.display = 'flex';
+                    document.getElementById('start-from-settings').style.display = 'none';
+                    document.getElementById('settings-title').innerText = 'PAUSED';
+                } else if (document.getElementById('settings-modal').classList.contains('show')) {
+                    document.getElementById('settings-modal').classList.remove('show');
+                    if (wasPlayingBeforePause) {
+                        wasPlayingBeforePause = false;
+                        isPlaying = true;
+                        updateVKFromGameplay();
+                        requestAnimationFrame(gameLoop);
+                    }
+                }
+            });
+
             safeGet('menu-settings-btn')?.addEventListener('click', () => {
                 syncSettings();
                 document.getElementById('game-over').style.display = 'none';
@@ -1374,7 +1393,6 @@
                 // Return and resume ONLY if was playing before pause
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
-                    gameLoopRunning = false;
                     document.getElementById('game-over').style.display = 'none';
                     isPlaying = true;
                     updateVKFromGameplay();
@@ -1408,7 +1426,6 @@
             settingsBtn?.addEventListener('click', () => {
                 if (isPlaying) {
                     document.getElementById('game-over').style.display = 'none';
-                    gameLoopRunning = false;
                     isPlaying = false;
                     wasPlayingBeforePause = true;
                     settingsModal.classList.add('show');
@@ -1421,10 +1438,8 @@
 
             safeGet('start-from-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                // Resume - NOT start a new game
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
-                    gameLoopRunning = false;
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
