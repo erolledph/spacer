@@ -1200,8 +1200,6 @@ window.addEventListener('keydown', (e) => {
                 doPauseResume();
                 return;
             }
-            return;
-        }
             
             if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'flex') {
                 startGame();
@@ -1312,6 +1310,28 @@ window.addEventListener('keydown', (e) => {
 
         function safeGet(id) { return document.getElementById(id); }
 
+        // Shared pause/resume logic (global)
+        window.doPauseResume = function() {
+            const modal = document.getElementById('settings-modal');
+            if (isPlaying) {
+                isPlaying = false;
+                wasPlayingBeforePause = true;
+                modal.classList.add('show');
+                document.getElementById('gameplay-buttons').style.display = 'flex';
+                document.getElementById('close-settings').style.display = 'flex';
+                document.getElementById('start-from-settings').style.display = 'none';
+                document.getElementById('settings-title').innerText = 'PAUSED';
+            } else if (modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                if (wasPlayingBeforePause) {
+                    wasPlayingBeforePause = false;
+                    isPlaying = true;
+                    updateVKFromGameplay();
+                    requestAnimationFrame(gameLoop);
+                }
+            }
+        };
+        
         function setupTopLeftIcons() {
             const soundBtn = document.getElementById('sound-btn');
             const settingsBtn = document.getElementById('settings-btn');
@@ -1357,9 +1377,7 @@ window.addEventListener('keydown', (e) => {
             });
 
             // X button - same as spacebar resume
-            safeGet('close-settings-modal')?.addEventListener('click', () => {
-                document.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
-            });
+            safeGet('close-settings-modal')?.addEventListener('click', window.doPauseResume);
 
             soundBtn?.addEventListener('click', () => {
                 bgMusicEnabled = !bgMusicEnabled;
@@ -1382,41 +1400,15 @@ window.addEventListener('keydown', (e) => {
                 }
             }
 
-// Shared pause/resume logic
-            function doPauseResume() {
-                const modal = document.getElementById('settings-modal');
-                if (isPlaying) {
-                    // Pause
-                    isPlaying = false;
-                    wasPlayingBeforePause = true;
-                    modal.classList.add('show');
-                    document.getElementById('gameplay-buttons').style.display = 'flex';
-                    document.getElementById('close-settings').style.display = 'flex';
-                    document.getElementById('start-from-settings').style.display = 'none';
-                    document.getElementById('settings-title').innerText = 'PAUSED';
-                } else if (modal.classList.contains('show')) {
-                    // Resume
-                    modal.classList.remove('show');
-                    if (wasPlayingBeforePause) {
-                        wasPlayingBeforePause = false;
-                        isPlaying = true;
-                        updateVKFromGameplay();
-                        requestAnimationFrame(gameLoop);
-                    }
-                }
-            }
+            settingsBtn?.addEventListener('click', window.doPauseResume);
 
-            settingsBtn?.addEventListener('click', doPauseResume);
+            safeGet('start-from-settings')?.addEventListener('click', window.doPauseResume);
 
-            safeGet('start-from-settings')?.addEventListener('click', doPauseResume);
-
-            safeGet('close-settings')?.addEventListener('click', doPauseResume);
-
-            safeGet('close-settings-modal')?.addEventListener('click', doPauseResume);
+            safeGet('close-settings')?.addEventListener('click', window.doPauseResume);
 
             settingsModal.addEventListener('click', (e) => {
                 if (e.target === settingsModal) {
-                    doPauseResume();
+                    window.doPauseResume();
                 }
             });
 
