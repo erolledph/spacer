@@ -1743,11 +1743,11 @@
                 } else {
                     const medImg = new Image();
                     medImg.src = 'medical-suitcase.png';
-                    const bounce = Math.sin(Date.now() / 150) * 3;
-                    const imgSize = 22;
+                    const bounce = Math.sin(Date.now() / 150) * 2;
+                    const imgSize = 18;
                     ctx.save();
                     ctx.globalAlpha = 0.7 + Math.sin(Date.now() / 200) * 0.3;
-                    ctx.drawImage(medImg, enemy.x - imgSize/2, enemy.y - 22 + bounce, imgSize, imgSize);
+                    ctx.drawImage(medImg, enemy.x - imgSize/2, enemy.y - 20 + bounce, imgSize, imgSize);
                     ctx.restore();
                 }
 
