@@ -1174,6 +1174,7 @@
                 }
                 if (isPlaying) {
                     isPlaying = false;
+                    wasPlayingBeforePause = true;
                     document.getElementById('settings-modal').classList.add('show');
                     document.getElementById('gameplay-buttons').style.display = 'flex';
                     document.getElementById('close-settings').style.display = 'flex';
@@ -1181,7 +1182,14 @@
                     document.getElementById('settings-title').innerText = 'PAUSED';
                 } else if (document.getElementById('settings-modal').classList.contains('show')) {
                     document.getElementById('settings-modal').classList.remove('show');
-                    isPlaying = true;
+                    // Resume ONLY if was playing before pause
+                    if (wasPlayingBeforePause) {
+                        wasPlayingBeforePause = false;
+                        isPlaying = true;
+                        updateVKFromGameplay();
+                        requestAnimationFrame(gameLoop);
+                    }
+                }
                     const vkEnabled = document.getElementById('vk-toggle').checked;
                     document.getElementById('virtual-keyboard').style.display = vkEnabled ? 'flex' : 'none';
                     requestAnimationFrame(gameLoop);
@@ -1390,7 +1398,15 @@
 
             safeGet('start-from-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                startGame();
+                // Resume - NOT start a new game
+                if (wasPlayingBeforePause) {
+                    wasPlayingBeforePause = false;
+                    isPlaying = true;
+                    updateVKFromGameplay();
+                    requestAnimationFrame(gameLoop);
+                } else {
+                    startGame();
+                }
             });
 
             safeGet('close-settings')?.addEventListener('click', () => {
@@ -1407,7 +1423,9 @@
             settingsModal.addEventListener('click', (e) => {
                 if (e.target === settingsModal) {
                     settingsModal.classList.remove('show');
-                    if (safeGet('game-over').style.display !== 'flex') {
+                    // Resume ONLY if was playing before
+                    if (wasPlayingBeforePause) {
+                        wasPlayingBeforePause = false;
                         isPlaying = true;
                         updateVKFromGameplay();
                         requestAnimationFrame(gameLoop);
