@@ -1048,6 +1048,7 @@
         let isPlaying = false;
         let isDemoMode = true;
         let wasPlayingBeforePause = false;
+        let gameLoopRunning = false;
         let score = 0;
         let streak = 0;
         let health = 100;
@@ -1173,6 +1174,7 @@
                     return;
                 }
                 if (isPlaying) {
+                    gameLoopRunning = false;
                     isPlaying = false;
                     wasPlayingBeforePause = true;
                     document.getElementById('settings-modal').classList.add('show');
@@ -1348,6 +1350,7 @@
                 // Return and resume ONLY if was playing before pause
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
+                    gameLoopRunning = false;
                     document.getElementById('game-over').style.display = 'none';
                     isPlaying = true;
                     updateVKFromGameplay();
@@ -1381,8 +1384,8 @@
             settingsBtn?.addEventListener('click', () => {
                 if (isPlaying) {
                     document.getElementById('game-over').style.display = 'none';
+                    gameLoopRunning = false;
                     isPlaying = false;
-                    // Store previousPlaying state before pausing
                     wasPlayingBeforePause = true;
                     settingsModal.classList.add('show');
                     safeGet('gameplay-buttons').style.display = 'flex';
@@ -1728,7 +1731,14 @@
         }
 
         function gameLoop(timestamp) {
-            if (!isPlaying) return;
+            if (!isPlaying) {
+                gameLoopRunning = false;
+                return;
+            }
+
+            // Prevent duplicate game loops
+            if (gameLoopRunning) return;
+            gameLoopRunning = true;
 
             ctx.save();
             
