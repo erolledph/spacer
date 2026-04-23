@@ -1424,6 +1424,7 @@
                 // Resume - NOT start a new game
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
+                    gameLoopRunning = false;
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
@@ -1435,12 +1436,13 @@
             safeGet('close-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
                 // Resume ONLY if game was playing before pause
-                if (wasPlayingBeforePause) {
-                    wasPlayingBeforePause = false;
-                    isPlaying = true;
-                    updateVKFromGameplay();
-                    requestAnimationFrame(gameLoop);
-                }
+if (wasPlayingBeforePause) {
+                        wasPlayingBeforePause = false;
+                        gameLoopRunning = false;
+                        isPlaying = true;
+                        updateVKFromGameplay();
+                        requestAnimationFrame(gameLoop);
+                    }
             });
 
             settingsModal.addEventListener('click', (e) => {
