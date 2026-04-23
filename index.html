@@ -1387,18 +1387,14 @@
                 safeGet('settings-title').innerText = 'SETTINGS';
             });
 
-            // Close settings modal (X button) - return to game over
+            // X button - same as spacebar resume
             safeGet('close-settings-modal')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                // Return and resume ONLY if was playing before pause
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
-                    document.getElementById('game-over').style.display = 'none';
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
-                } else if (!isPlaying) {
-                    document.getElementById('game-over').style.display = 'flex';
                 }
             });
 
@@ -1448,16 +1444,14 @@
                 }
             });
 
-            safeGet('close-settings')?.addEventListener('click', () => {
+safeGet('close-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                // Resume ONLY if game was playing before pause
-if (wasPlayingBeforePause) {
-                        wasPlayingBeforePause = false;
-
-                        isPlaying = true;
-                        updateVKFromGameplay();
-                        requestAnimationFrame(gameLoop);
-                    }
+                if (wasPlayingBeforePause) {
+                    wasPlayingBeforePause = false;
+                    isPlaying = true;
+                    updateVKFromGameplay();
+                    requestAnimationFrame(gameLoop);
+                }
             });
 
             settingsModal.addEventListener('click', (e) => {
