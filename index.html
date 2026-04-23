@@ -1049,6 +1049,16 @@
         let isDemoMode = true;
         let wasPlayingBeforePause = false;
         let gameLoopRunning = false;
+        
+        function updateVKFromGameplay() {
+            const vkEnabled = safeGet('vk-toggle').checked;
+            if (vkEnabled && isPlaying) {
+                toggleVirtualKeyboard(true);
+            } else if (!vkEnabled && document.getElementById('game-over').style.display !== 'flex') {
+                toggleVirtualKeyboard(false);
+            }
+        }
+        
         let score = 0;
         let streak = 0;
         let health = 100;
@@ -1444,15 +1454,6 @@
                     targetPlayerY = canvas.height - 60;
                 }
                 resizeCanvas();
-            }
-
-            function updateVKFromGameplay() {
-                const vkEnabled = safeGet('vk-toggle').checked;
-                if (vkEnabled && isPlaying) {
-                    toggleVirtualKeyboard(true);
-                } else if (!vkEnabled && document.getElementById('game-over').style.display !== 'flex') {
-                    toggleVirtualKeyboard(false);
-                }
             }
 
             safeGet('modal-vk-toggle')?.addEventListener('change', (e) => {
