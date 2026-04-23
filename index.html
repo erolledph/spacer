@@ -1197,7 +1197,7 @@ window.addEventListener('keydown', (e) => {
                     startGame();
                     return;
                 }
-                doPauseResume();
+                window.doPauseResume();
                 return;
             }
             
@@ -1312,8 +1312,10 @@ window.addEventListener('keydown', (e) => {
 
         // Shared pause/resume logic (global)
         window.doPauseResume = function() {
+            console.log('doPauseResume called, isPlaying:', isPlaying, 'wasPlayingBeforePause:', wasPlayingBeforePause);
             const modal = document.getElementById('settings-modal');
             if (isPlaying) {
+                console.log('Pausing game');
                 isPlaying = false;
                 wasPlayingBeforePause = true;
                 modal.classList.add('show');
@@ -1322,12 +1324,15 @@ window.addEventListener('keydown', (e) => {
                 document.getElementById('start-from-settings').style.display = 'none';
                 document.getElementById('settings-title').innerText = 'PAUSED';
             } else if (modal.classList.contains('show')) {
+                console.log('Resuming game');
                 modal.classList.remove('show');
                 if (wasPlayingBeforePause) {
                     wasPlayingBeforePause = false;
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
+                } else {
+                    console.log('No wasPlayingBeforePause, ignoring - health:', health, 'wave:', currentWave);
                 }
             }
         };
