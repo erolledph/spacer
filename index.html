@@ -1330,6 +1330,7 @@
             safeGet('menu-settings-btn')?.addEventListener('click', () => {
                 syncSettings();
                 settingsModal.classList.add('show');
+                safeGet('game-over').style.display = 'none';
                 safeGet('gameplay-buttons').style.display = 'none';
                 safeGet('close-settings').style.display = 'none';
                 safeGet('start-from-settings').style.display = 'flex';
