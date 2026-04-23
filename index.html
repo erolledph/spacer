@@ -1329,8 +1329,8 @@
 
             safeGet('menu-settings-btn')?.addEventListener('click', () => {
                 syncSettings();
+                document.getElementById('game-over').style.display = 'none';
                 settingsModal.classList.add('show');
-                safeGet('game-over').style.display = 'none';
                 safeGet('gameplay-buttons').style.display = 'none';
                 safeGet('close-settings').style.display = 'none';
                 safeGet('start-from-settings').style.display = 'flex';
@@ -1340,7 +1340,11 @@
             // Close settings modal (X button) - return to game over
             safeGet('close-settings-modal')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                document.getElementById('game-over').style.display = 'flex';
+                if (isPlaying) {
+                    document.getElementById('game-over').style.display = 'none';
+                } else {
+                    document.getElementById('game-over').style.display = 'flex';
+                }
             });
 
             soundBtn?.addEventListener('click', () => {
@@ -1366,6 +1370,7 @@
 
             settingsBtn?.addEventListener('click', () => {
                 if (isPlaying) {
+                    document.getElementById('game-over').style.display = 'none';
                     isPlaying = false;
                     settingsModal.classList.add('show');
                     safeGet('gameplay-buttons').style.display = 'flex';
