@@ -624,6 +624,25 @@
             animation: modalSlideIn 0.3s ease-out;
             margin: 20px auto;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close-btn:hover {
+            opacity: 1;
         }
 
         @keyframes modalSlideIn {
@@ -871,6 +890,7 @@
 
                     <div id="settings-modal" class="modal">
                         <div class="modal-content">
+                            <button class="modal-close-btn" id="close-settings-modal">&times;</button>
                             <h2 id="settings-title">PAUSED</h2>
                             <div class="settings-section">
                                 <div class="setting-item">
@@ -1314,6 +1334,12 @@
                 safeGet('close-settings').style.display = 'none';
                 safeGet('start-from-settings').style.display = 'flex';
                 safeGet('settings-title').innerText = 'SETTINGS';
+            });
+
+            // Close settings modal (X button) - return to game over
+            safeGet('close-settings-modal')?.addEventListener('click', () => {
+                settingsModal.classList.remove('show');
+                document.getElementById('game-over').style.display = 'flex';
             });
 
             soundBtn?.addEventListener('click', () => {
