@@ -1048,7 +1048,7 @@
         let isPlaying = false;
         let isDemoMode = true;
         let wasPlayingBeforePause = false;
-        let gameLoopRunning = false;
+        
         
         function toggleVirtualKeyboard(show) {
             const vk = safeGet('virtual-keyboard');
@@ -1438,7 +1438,7 @@
                 // Resume ONLY if game was playing before pause
 if (wasPlayingBeforePause) {
                         wasPlayingBeforePause = false;
-                        gameLoopRunning = false;
+
                         isPlaying = true;
                         updateVKFromGameplay();
                         requestAnimationFrame(gameLoop);
@@ -1735,13 +1735,8 @@ if (wasPlayingBeforePause) {
 
         function gameLoop(timestamp) {
             if (!isPlaying) {
-                gameLoopRunning = false;
                 return;
             }
-
-            // Prevent duplicate game loops
-            if (gameLoopRunning) return;
-            gameLoopRunning = true;
 
             ctx.save();
             
