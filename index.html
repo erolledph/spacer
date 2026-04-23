@@ -1050,6 +1050,20 @@
         let wasPlayingBeforePause = false;
         let gameLoopRunning = false;
         
+        function toggleVirtualKeyboard(show) {
+            const vk = safeGet('virtual-keyboard');
+            if (show) {
+                vk.style.display = 'flex';
+                vk.classList.add('show');
+                targetPlayerY = canvas.height - 280;
+            } else {
+                vk.style.display = 'none';
+                vk.classList.remove('show');
+                targetPlayerY = canvas.height - 60;
+            }
+            resizeCanvas();
+        }
+        
         function updateVKFromGameplay() {
             const vkEnabled = safeGet('vk-toggle').checked;
             if (vkEnabled && isPlaying) {
@@ -1441,20 +1455,6 @@
                     }
                 }
             });
-
-            function toggleVirtualKeyboard(show) {
-                const vk = safeGet('virtual-keyboard');
-                if (show) {
-                    vk.style.display = 'flex';
-                    vk.classList.add('show');
-                    targetPlayerY = canvas.height - 280;
-                } else {
-                    vk.style.display = 'none';
-                    vk.classList.remove('show');
-                    targetPlayerY = canvas.height - 60;
-                }
-                resizeCanvas();
-            }
 
             safeGet('modal-vk-toggle')?.addEventListener('change', (e) => {
                 safeGet('vk-toggle').checked = e.target.checked;
