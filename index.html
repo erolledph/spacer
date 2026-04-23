@@ -1047,6 +1047,7 @@
 
         let isPlaying = false;
         let isDemoMode = true;
+        let wasPlayingBeforePause = false;
         let score = 0;
         let streak = 0;
         let health = 100;
@@ -1340,9 +1341,14 @@
             // Close settings modal (X button) - return to game over
             safeGet('close-settings-modal')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                if (isPlaying) {
+                // Return and resume ONLY if was playing before pause
+                if (wasPlayingBeforePause) {
+                    wasPlayingBeforePause = false;
                     document.getElementById('game-over').style.display = 'none';
-                } else {
+                    isPlaying = true;
+                    updateVKFromGameplay();
+                    requestAnimationFrame(gameLoop);
+                } else if (!isPlaying) {
                     document.getElementById('game-over').style.display = 'flex';
                 }
             });
@@ -1372,6 +1378,8 @@
                 if (isPlaying) {
                     document.getElementById('game-over').style.display = 'none';
                     isPlaying = false;
+                    // Store previousPlaying state before pausing
+                    wasPlayingBeforePause = true;
                     settingsModal.classList.add('show');
                     safeGet('gameplay-buttons').style.display = 'flex';
                     safeGet('close-settings').style.display = 'flex';
@@ -1387,7 +1395,9 @@
 
             safeGet('close-settings')?.addEventListener('click', () => {
                 settingsModal.classList.remove('show');
-                if (safeGet('game-over').style.display !== 'flex') {
+                // Resume ONLY if game was playing before pause
+                if (wasPlayingBeforePause) {
+                    wasPlayingBeforePause = false;
                     isPlaying = true;
                     updateVKFromGameplay();
                     requestAnimationFrame(gameLoop);
@@ -1639,6 +1649,7 @@
         function gameOver(reason) {
             isPlaying = false;
             isDemoMode = false;
+            wasPlayingBeforePause = false;
             shieldActivated = false;
             document.getElementById('shield-promo').classList.remove('activated');
             document.getElementById('shield-status').innerText = 'Click to get 2x Shield';
