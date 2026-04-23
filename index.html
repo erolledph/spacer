@@ -1189,7 +1189,7 @@
             updateUI();
         }
 
-        window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => {
             if (e.code === 'Enter' || e.code === 'Space') {
                 e.preventDefault();
                 if (!isPlaying && !document.getElementById('settings-modal').classList.contains('show')) {
@@ -1197,26 +1197,11 @@
                     startGame();
                     return;
                 }
-                if (isPlaying) {
-                    isPlaying = false;
-                    wasPlayingBeforePause = true;
-                    document.getElementById('settings-modal').classList.add('show');
-                    document.getElementById('gameplay-buttons').style.display = 'flex';
-                    document.getElementById('close-settings').style.display = 'flex';
-                    document.getElementById('start-from-settings').style.display = 'none';
-                    document.getElementById('settings-title').innerText = 'PAUSED';
-                } else if (document.getElementById('settings-modal').classList.contains('show')) {
-                    document.getElementById('settings-modal').classList.remove('show');
-                    // Resume ONLY if was playing before pause
-                    if (wasPlayingBeforePause) {
-                        wasPlayingBeforePause = false;
-                        isPlaying = true;
-                        updateVKFromGameplay();
-                        requestAnimationFrame(gameLoop);
-                    }
-                }
+                doPauseResume();
                 return;
             }
+            return;
+        }
             
             if (e.code === 'KeyJ' && !isPlaying && document.getElementById('game-over').style.display === 'flex') {
                 startGame();
@@ -1358,23 +1343,7 @@
             }
 
             settingsBtn?.addEventListener('click', () => {
-                if (isPlaying) {
-                    isPlaying = false;
-                    wasPlayingBeforePause = true;
-                    document.getElementById('settings-modal').classList.add('show');
-                    document.getElementById('gameplay-buttons').style.display = 'flex';
-                    document.getElementById('close-settings').style.display = 'flex';
-                    document.getElementById('start-from-settings').style.display = 'none';
-                    document.getElementById('settings-title').innerText = 'PAUSED';
-                } else if (document.getElementById('settings-modal').classList.contains('show')) {
-                    document.getElementById('settings-modal').classList.remove('show');
-                    if (wasPlayingBeforePause) {
-                        wasPlayingBeforePause = false;
-                        isPlaying = true;
-                        updateVKFromGameplay();
-                        requestAnimationFrame(gameLoop);
-                    }
-                }
+                document.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
             });
 
             safeGet('menu-settings-btn')?.addEventListener('click', () => {
@@ -1389,13 +1358,7 @@
 
             // X button - same as spacebar resume
             safeGet('close-settings-modal')?.addEventListener('click', () => {
-                settingsModal.classList.remove('show');
-                if (wasPlayingBeforePause) {
-                    wasPlayingBeforePause = false;
-                    isPlaying = true;
-                    updateVKFromGameplay();
-                    requestAnimationFrame(gameLoop);
-                }
+                document.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
             });
 
             soundBtn?.addEventListener('click', () => {
@@ -1419,51 +1382,41 @@
                 }
             }
 
-            settingsBtn?.addEventListener('click', () => {
+// Shared pause/resume logic
+            function doPauseResume() {
+                const modal = document.getElementById('settings-modal');
                 if (isPlaying) {
-                    document.getElementById('game-over').style.display = 'none';
+                    // Pause
                     isPlaying = false;
                     wasPlayingBeforePause = true;
-                    settingsModal.classList.add('show');
-                    safeGet('gameplay-buttons').style.display = 'flex';
-                    safeGet('close-settings').style.display = 'flex';
-                    safeGet('start-from-settings').style.display = 'none';
-                    safeGet('settings-title').innerText = "PAUSED";
-                }
-            });
-
-            safeGet('start-from-settings')?.addEventListener('click', () => {
-                settingsModal.classList.remove('show');
-                if (wasPlayingBeforePause) {
-                    wasPlayingBeforePause = false;
-                    isPlaying = true;
-                    updateVKFromGameplay();
-                    requestAnimationFrame(gameLoop);
-                } else {
-                    startGame();
-                }
-            });
-
-safeGet('close-settings')?.addEventListener('click', () => {
-                settingsModal.classList.remove('show');
-                if (wasPlayingBeforePause) {
-                    wasPlayingBeforePause = false;
-                    isPlaying = true;
-                    updateVKFromGameplay();
-                    requestAnimationFrame(gameLoop);
-                }
-            });
-
-            settingsModal.addEventListener('click', (e) => {
-                if (e.target === settingsModal) {
-                    settingsModal.classList.remove('show');
-                    // Resume ONLY if was playing before
+                    modal.classList.add('show');
+                    document.getElementById('gameplay-buttons').style.display = 'flex';
+                    document.getElementById('close-settings').style.display = 'flex';
+                    document.getElementById('start-from-settings').style.display = 'none';
+                    document.getElementById('settings-title').innerText = 'PAUSED';
+                } else if (modal.classList.contains('show')) {
+                    // Resume
+                    modal.classList.remove('show');
                     if (wasPlayingBeforePause) {
                         wasPlayingBeforePause = false;
                         isPlaying = true;
                         updateVKFromGameplay();
                         requestAnimationFrame(gameLoop);
                     }
+                }
+            }
+
+            settingsBtn?.addEventListener('click', doPauseResume);
+
+            safeGet('start-from-settings')?.addEventListener('click', doPauseResume);
+
+            safeGet('close-settings')?.addEventListener('click', doPauseResume);
+
+            safeGet('close-settings-modal')?.addEventListener('click', doPauseResume);
+
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target === settingsModal) {
+                    doPauseResume();
                 }
             });
 
