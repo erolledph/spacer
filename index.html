@@ -985,7 +985,7 @@
             const vkToggle = document.getElementById('vk-toggle');
             const vkEnabled = vkToggle ? vkToggle.checked : false;
             
-            targetPlayerY = canvas.height - 120;
+            targetPlayerY = vkEnabled ? canvas.height - 280 : canvas.height - 60;
             player.y = targetPlayerY;
         }
         
@@ -1378,9 +1378,11 @@
                 if (show) {
                     vk.style.display = 'flex';
                     vk.classList.add('show');
+                    targetPlayerY = canvas.height - 280;
                 } else {
                     vk.style.display = 'none';
                     vk.classList.remove('show');
+                    targetPlayerY = canvas.height - 60;
                 }
                 resizeCanvas();
             }
