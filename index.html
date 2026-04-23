@@ -985,15 +985,14 @@
             const vkToggle = document.getElementById('vk-toggle');
             const vkEnabled = vkToggle ? vkToggle.checked : false;
             
-            targetPlayerY = canvas.height - 120;
-            player.y = targetPlayerY;
+            targetPlayerY = vkEnabled ? canvas.height - 280 : canvas.height - 60;
+            if (player.y === 0) { player.y = targetPlayerY; }
         }
         
         function updatePlayerPosition() {
             if (Math.abs(player.y - targetPlayerY) > 1) {
                 player.y += (targetPlayerY - player.y) * 0.15;
             } else {
-                player.y = targetPlayerY;
             }
         }
         window.addEventListener('resize', resizeCanvas);
@@ -1881,6 +1880,7 @@
                 }
             }
             
+            updatePlayerPosition();
             drawPlayer();
             drawEnemies();
             drawLasers();
