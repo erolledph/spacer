@@ -1741,15 +1741,13 @@
                         ctx.restore();
                     }
                 } else {
+                    const medImg = new Image();
+                    medImg.src = 'medical-suitcase.png';
+                    const bounce = Math.sin(Date.now() / 150) * 3;
+                    const imgSize = 22;
                     ctx.save();
-                    ctx.translate(enemy.x - 10, enemy.y - 22);
-                    ctx.scale(0.45, 0.45);
-                    ctx.strokeStyle = '#ff0055';
-                    ctx.lineWidth = 3;
-                    ctx.shadowColor = '#ff0055';
-                    ctx.shadowBlur = 8;
-                    ctx.stroke(plusPath);
-                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 0.7 + Math.sin(Date.now() / 200) * 0.3;
+                    ctx.drawImage(medImg, enemy.x - imgSize/2, enemy.y - 22 + bounce, imgSize, imgSize);
                     ctx.restore();
                 }
 
