@@ -1286,7 +1286,8 @@ window.addEventListener('keydown', (e) => {
 
             // Pause/Play button
             const pauseBtn = document.getElementById('pause-btn');
-            pauseBtn?.addEventListener('click', () => {
+            pauseBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (window.doPauseResume) {
                     window.doPauseResume();
                 }
@@ -1829,7 +1830,7 @@ window.addEventListener('keydown', (e) => {
         document.getElementById('sound-off-icon').style.display = 'none';
 
         document.getElementById('game-container').addEventListener('click', function(e) {
-            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over'];
+            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over', 'top-right-icons', 'pause-btn'];
             const isExcluded = excludeIds.some(id => e.target.id === id || e.target.closest(`#${id}`));
             
             if (!isPlaying && !isExcluded) {
