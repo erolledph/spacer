@@ -358,7 +358,7 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        #game-over h1 {
+        #game-over h1, #main-menu-container h1 {
             font-family: 'Courier New', Courier, monospace;
             color: var(--neon-blue);
             margin: 0 0 2px 0;
@@ -369,7 +369,7 @@
             text-transform: uppercase;
         }
 
-        #game-over .subtitle {
+        #game-over .subtitle, #main-menu-container .subtitle {
             color: rgba(255,255,255,0.5);
             font-size: 10px;
             letter-spacing: 2px;
@@ -462,7 +462,7 @@
             box-shadow: 0 4px 25px rgba(255,0,85,0.35);
         }
 
-        #game-over #instructions {
+        #game-over #instructions, #main-menu-container #instructions {
             color: rgba(255,255,255,0.45);
             font-size: 13px;
             margin-top: 25px;
@@ -784,6 +784,9 @@
                             </div>
                         </div>
                         <div id="top-right-icons">
+                            <button class="top-icon-btn" id="settings-btn" title="Settings Menu">
+                                <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.5 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                            </button>
                             <button class="top-icon-btn" id="sound-btn" title="Sound">
                                 <svg id="sound-on-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                                 <svg id="sound-off-icon" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
@@ -823,8 +826,7 @@
                             
                             <div id="game-over" style="display:none;">
                         <div class="main-menu">
-                            <h1 id="screen-title">KEYBOARD RANGER</h1>
-                            <p class="subtitle">Space Typing Defense</p>
+                            <h1 id="screen-title-game-over">GAME OVER</h1>
                             <div id="game-stats" class="bento-grid" style="display:grid; grid-template-columns:1fr 1fr;">
                                 <div class="bento-item stat-box">
                                     <div class="stat-label">RANK</div>
@@ -844,7 +846,19 @@
                                 </div>
                             </div>
                             <div class="menu-buttons">
+                                <button class="menu-btn btn-play" id="restart-game-over-btn">RESTART MISSION</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="main-menu-container" style="display:none;">
+                        <div class="main-menu">
+                            <h1 id="screen-title">KEYBOARD RANGER</h1>
+                            <p class="subtitle">Space Typing Defense</p>
+                            <div class="menu-buttons">
                                 <button class="menu-btn btn-play" id="start-btn">START MISSION</button>
+                                <button class="menu-btn btn-play" id="resume-btn" style="display:none;">RESUME MISSION</button>
+                                <button class="menu-btn btn-play" id="restart-menu-btn" style="display:none;">RESTART MISSION</button>
                             </div>
                             <p id="instructions">Type words to destroy invaders.<br><span style="color:var(--neon-pink)">Wrong letters = enemies shoot back!</span></p>
                         </div>
@@ -1072,18 +1086,18 @@ window.addEventListener('keydown', (e) => {
                 const settingsModal = document.getElementById('settings-modal');
                 const pausedOverlay = document.getElementById('paused-overlay');
                 
-                console.log('Space pressed - isPlaying:', isPlaying, 'wasPlayingBeforePause:', wasPlayingBeforePause, 'overlayShown:', pausedOverlay.classList.contains('show'));
+
                 
                 if (!isPlaying && !pausedOverlay.classList.contains('show')) {
                     // Start new game from start screen
-                    console.log('Starting new game from start screen');
+
                     document.getElementById('start-prompt').style.display = 'none';
                     startGame();
                     return;
                 }
                 
                 // Normal pause/resume toggle
-                console.log('Calling doPauseResume');
+
                 window.doPauseResume();
                 return;
             }
@@ -1140,6 +1154,7 @@ window.addEventListener('keydown', (e) => {
 
         function startGame() {
             document.getElementById('game-over').style.display = 'none';
+            document.getElementById('main-menu-container').style.display = 'none';
             document.getElementById('start-prompt').style.display = 'none';
 
             const pauseIcon = document.getElementById('pause-icon');
@@ -1168,7 +1183,7 @@ window.addEventListener('keydown', (e) => {
             
             score = 0;
             streak = 0;
-            console.log('Starting game, shieldActivated:', shieldActivated, 'health should be:', shieldActivated ? 200 : 100);
+
             health = shieldActivated ? 200 : 100;
             enemies = [];
             lasers = [];
@@ -1207,13 +1222,13 @@ window.addEventListener('keydown', (e) => {
 
         // Shared pause/resume logic (global)
         window.doPauseResume = function() {
-            console.log('doPauseResume called, isPlaying:', isPlaying, 'wasPlayingBeforePause:', wasPlayingBeforePause);
+
             const pausedOverlay = document.getElementById('paused-overlay');
             const pauseIcon = document.getElementById('pause-icon');
             const playIcon = document.getElementById('play-icon');
 
             if (isPlaying) {
-                console.log('Pausing game');
+
                 isPlaying = false;
                 wasPlayingBeforePause = true;
                 pausedOverlay.classList.add('show');
@@ -1222,7 +1237,7 @@ window.addEventListener('keydown', (e) => {
                     playIcon.style.display = 'flex';
                 }
             } else if (wasPlayingBeforePause) {
-                console.log('Resuming game');
+
                 wasPlayingBeforePause = false;
                 isPlaying = true;
                 pausedOverlay.classList.remove('show');
@@ -1236,6 +1251,41 @@ window.addEventListener('keydown', (e) => {
         };
         
         function setupTopLeftIcons() {
+            const settingsBtn = document.getElementById('settings-btn');
+            settingsBtn?.addEventListener('click', () => {
+                // Do not allow opening settings menu if game over screen is showing
+                if (document.getElementById('game-over').style.display === 'flex') return;
+
+                const mainMenu = document.getElementById('main-menu-container');
+                if (mainMenu.style.display === 'flex') {
+                    mainMenu.style.display = 'none';
+                    if (!isPlaying && wasPlayingBeforePause) {
+                        window.doPauseResume();
+                    }
+                } else {
+                    if (isPlaying) {
+                        window.doPauseResume();
+                    }
+                    mainMenu.style.display = 'flex';
+
+                    const startBtn = document.getElementById('start-btn');
+                    const resumeBtn = document.getElementById('resume-btn');
+                    const restartBtn = document.getElementById('restart-menu-btn');
+
+                    if (health > 0 && enemies.length > 0 && !isDemoMode) {
+                        // Game is active but paused
+                        if (startBtn) startBtn.style.display = 'none';
+                        if (resumeBtn) resumeBtn.style.display = 'block';
+                        if (restartBtn) restartBtn.style.display = 'block';
+                    } else {
+                        // Start screen
+                        if (startBtn) startBtn.style.display = 'block';
+                        if (resumeBtn) resumeBtn.style.display = 'none';
+                        if (restartBtn) restartBtn.style.display = 'none';
+                    }
+                }
+            });
+
             const soundBtn = document.getElementById('sound-btn');
             const vkToggleBtn = document.getElementById('vk-toggle-btn');
 
@@ -1320,6 +1370,27 @@ window.addEventListener('keydown', (e) => {
             });
 
             safeGet('start-btn')?.addEventListener('click', () => {
+                document.getElementById('main-menu-container').style.display = 'none';
+                isDemoMode = false;
+                startGame();
+            });
+
+            safeGet('resume-btn')?.addEventListener('click', () => {
+                document.getElementById('main-menu-container').style.display = 'none';
+                if (!isPlaying) {
+                    window.doPauseResume();
+                }
+            });
+
+            safeGet('restart-menu-btn')?.addEventListener('click', () => {
+                document.getElementById('main-menu-container').style.display = 'none';
+                isDemoMode = false;
+                startGame();
+            });
+
+            safeGet('restart-game-over-btn')?.addEventListener('click', () => {
+                document.getElementById('game-over').style.display = 'none';
+                isDemoMode = false;
                 startGame();
             });
         }
@@ -1481,9 +1552,7 @@ window.addEventListener('keydown', (e) => {
                 nameInput.value = "Pilot_" + Math.floor(1000 + Math.random() * 9000);
             }
             
-            document.getElementById('instructions').innerHTML = 'Press [J] to continue';
-            document.getElementById('start-btn').innerText = "RETRY MISSION";
-            document.getElementById('start-btn').style.display = 'flex';
+
             
             document.getElementById('game-over').style.display = 'flex';
         }
@@ -1700,6 +1769,10 @@ window.addEventListener('keydown', (e) => {
         resizeCanvas();
         
         document.getElementById('game-over').style.display = 'none';
+        document.getElementById('main-menu-container').style.display = 'flex';
+        document.getElementById('start-btn').style.display = 'block';
+        document.getElementById('resume-btn').style.display = 'none';
+        document.getElementById('restart-menu-btn').style.display = 'none';
         document.getElementById('virtual-keyboard').style.display = 'none';
         
         initStars();
@@ -1830,12 +1903,13 @@ window.addEventListener('keydown', (e) => {
         document.getElementById('sound-off-icon').style.display = 'none';
 
         document.getElementById('game-container').addEventListener('click', function(e) {
-            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over', 'top-right-icons', 'pause-btn'];
+            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over', 'main-menu-container', 'top-right-icons', 'pause-btn'];
             const isExcluded = excludeIds.some(id => e.target.id === id || e.target.closest(`#${id}`));
             
-            if (!isPlaying && !isExcluded) {
+            if (!isPlaying && !isExcluded && health > 0) {
                 isDemoMode = false;
                 document.getElementById('start-prompt').style.display = 'none';
+                document.getElementById('main-menu-container').style.display = 'none';
                 startGame();
             }
         });
@@ -1847,11 +1921,11 @@ window.addEventListener('keydown', (e) => {
             
             e.preventDefault();
             e.stopPropagation();
-            console.log('Shield promo clicked, shieldActivated before:', shieldActivated);
+
             if (shieldActivated) return;
             
             shieldActivated = true;
-            console.log('Shield activated! Next game will have 200 HP');
+
             
             const shieldStatus = document.getElementById('shield-status');
             if (shieldStatus) shieldStatus.innerText = 'SHIELD ACTIVATED!';
@@ -1860,7 +1934,7 @@ window.addEventListener('keydown', (e) => {
             // Try to open link - may be blocked by popup blockers on file:// URLs
             const linkWindow = window.open('https://example.com', '_blank');
             if (!linkWindow) {
-                console.log('Popup blocked - link would open in new tab on hosted site');
+
             }
         });
 
