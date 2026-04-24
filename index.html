@@ -1218,12 +1218,18 @@ window.addEventListener('keydown', (e) => {
 
             soundBtn?.addEventListener('click', () => {
                 bgMusicEnabled = !bgMusicEnabled;
+                pewSoundEnabled = bgMusicEnabled; // Sync both sound and music
                 safeGet('bgmusic-toggle').checked = bgMusicEnabled;
+                safeGet('pew-toggle').checked = pewSoundEnabled;
                 updateSoundIcon();
                 
                 const bgMusic = safeGet('bg-music');
-                if (bgMusicEnabled && isPlaying && bgMusic && bgMusic.paused) {
-                    bgMusic.play().catch(() => {});
+                if (bgMusic) {
+                    if (bgMusicEnabled && isPlaying && bgMusic.paused) {
+                        bgMusic.play().catch(() => {});
+                    } else if (!bgMusicEnabled && !bgMusic.paused) {
+                        bgMusic.pause();
+                    }
                 }
             });
 
