@@ -321,7 +321,7 @@
             flex-shrink: 0;
         }
 
-        #game-over {
+        #game-over, #main-menu-container {
             display: grid;
             place-items: center;
             position: absolute;
@@ -1252,7 +1252,8 @@ window.addEventListener('keydown', (e) => {
         
         function setupTopLeftIcons() {
             const settingsBtn = document.getElementById('settings-btn');
-            settingsBtn?.addEventListener('click', () => {
+            settingsBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 // Do not allow opening settings menu if game over screen is showing
                 if (document.getElementById('game-over').style.display === 'flex') return;
 
@@ -1289,7 +1290,8 @@ window.addEventListener('keydown', (e) => {
             const soundBtn = document.getElementById('sound-btn');
             const vkToggleBtn = document.getElementById('vk-toggle-btn');
 
-            soundBtn?.addEventListener('click', () => {
+            soundBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 bgMusicEnabled = !bgMusicEnabled;
                 pewSoundEnabled = bgMusicEnabled; // Sync both sound and music
                 safeGet('bgmusic-toggle').checked = bgMusicEnabled;
@@ -1316,7 +1318,8 @@ window.addEventListener('keydown', (e) => {
             }
 
             // Virtual Keyboard toggle button
-            vkToggleBtn?.addEventListener('click', () => {
+            vkToggleBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const vkToggle = safeGet('vk-toggle');
                 const newState = !vkToggle.checked;
                 vkToggle.checked = newState;
@@ -1903,7 +1906,7 @@ window.addEventListener('keydown', (e) => {
         document.getElementById('sound-off-icon').style.display = 'none';
 
         document.getElementById('game-container').addEventListener('click', function(e) {
-            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over', 'main-menu-container', 'top-right-icons', 'pause-btn'];
+            const excludeIds = ['shield-promo', 'submit-score-btn', 'player-name', 'game-over', 'main-menu-container', 'top-right-icons', 'pause-btn', 'settings-btn'];
             const isExcluded = excludeIds.some(id => e.target.id === id || e.target.closest(`#${id}`));
             
             if (!isPlaying && !isExcluded && health > 0) {
