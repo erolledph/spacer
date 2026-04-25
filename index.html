@@ -1307,6 +1307,16 @@ window.addEventListener('keydown', (e) => {
                 updateShip();
             });
 
+            const laserColorPicker = document.getElementById('laser-color-picker');
+            laserColorPicker?.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            laserColorPicker?.addEventListener('input', (e) => {
+                e.stopPropagation();
+                const newColor = e.target.value;
+                console.log('Laser color changed to:', newColor);
+            });
+
             const settingsBtn = document.getElementById('settings-btn');
             settingsBtn?.addEventListener('click', (e) => {
                 e.stopPropagation();
