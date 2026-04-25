@@ -865,7 +865,7 @@
                         </div>
                     </div>
 
-                    <div id="main-menu-container" style="display:none;">
+                    <div id="main-menu-container" style="display:none;" onclick="event.stopPropagation();">
                         <div class="main-menu">
                             <h1 id="screen-title">BARRACKS</h1>
                             <p class="subtitle">Configuration</p>
@@ -1295,12 +1295,14 @@ window.addEventListener('keydown', (e) => {
 
             shipPrevBtn?.addEventListener('click', (e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 currentShipIndex = (currentShipIndex - 1 + availableShips.length) % availableShips.length;
                 updateShip();
             });
 
             shipNextBtn?.addEventListener('click', (e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 currentShipIndex = (currentShipIndex + 1) % availableShips.length;
                 updateShip();
             });
@@ -1426,20 +1428,21 @@ window.addEventListener('keydown', (e) => {
                 }
             });
 
-            safeGet('start-btn')?.addEventListener('click', () => {
+            safeGet('start-btn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 document.getElementById('main-menu-container').style.display = 'none';
                 isDemoMode = false;
                 startGame();
             });
 
-            safeGet('resume-btn')?.addEventListener('click', () => {
+            safeGet('resume-btn')?.addEventListener('click', (e) => { e.stopPropagation();
                 document.getElementById('main-menu-container').style.display = 'none';
                 if (!isPlaying) {
                     window.doPauseResume();
                 }
             });
 
-            safeGet('restart-menu-btn')?.addEventListener('click', () => {
+            safeGet('restart-menu-btn')?.addEventListener('click', (e) => { e.stopPropagation();
                 document.getElementById('main-menu-container').style.display = 'none';
                 isDemoMode = false;
                 startGame();
@@ -1937,11 +1940,24 @@ window.addEventListener('keydown', (e) => {
         }
         
         function drawLasers() {
+            const laserColor = document.getElementById('laser-color-picker')?.value || '#00ffff';
+            ctx.strokeStyle = laserColor;
+            ctx.lineWidth = 3;
             for (let i = lasers.length - 1; i >= 0; i--) {
-                lasers[i].progress += 0.25;
-                if (lasers[i].progress >= 1) {
-                    lasers.splice(i, 1);
-                }
+                let l = lasers[i];
+                l.progress += 0.25;
+
+                ctx.beginPath();
+                const startX = l.x + (l.targetX - l.x) * Math.max(0, l.progress - 0.2);
+                const startY = l.y + (l.targetY - l.y) * Math.max(0, l.progress - 0.2);
+                const endX = l.x + (l.targetX - l.x) * l.progress;
+                const endY = l.y + (l.targetY - l.y) * l.progress;
+
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+
+                if (l.progress >= 1) lasers.splice(i, 1);
             }
         }
         

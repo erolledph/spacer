@@ -1,0 +1,5 @@
+1. The start screen uses a separate rendering loop `renderStartScreen()` which has its own `drawLasers()` but it doesn't actually draw anything in `drawLasers()`, it just increments progress! Wait, `drawLasers()` at line 1939 doesn't use `laserColor` at all, and it doesn't call `stroke()`. Oh, I see, `renderStartScreen()` just handles logic for lasers. Oh wait, `renderStartScreen` doesn't draw lasers!
+Wait, no, the main game loop uses an inline loop for lasers (lines 1754-1770) where it *does* draw lasers and uses `laserColor`. The `drawLasers` function at 1939 just increments progress but doesn't draw them.
+
+2. About the spaceship: The actual rendering of the spaceship during gameplay is done in `drawPlayer()`.
+Let's find `drawPlayer()` to see how it renders the spaceship.
