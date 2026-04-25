@@ -1458,6 +1458,7 @@ window.addEventListener('keydown', (e) => {
             
             if (enemiesSpawned >= enemiesPerWave && enemies.length === 0) {
                 currentWave++;
+                updateUI();
                 enemiesSpawned = 0;
                 enemiesPerWave = Math.min(5 + (currentWave - 1) * 2, 15);
                 spawnRate = Math.max(1500 - (currentWave * 50), 700);
