@@ -121,6 +121,7 @@
 
         #score-display { left: 15px; color: var(--neon-blue); }
         #multiplier-display { left: 15px; top: 40px; color: #ff00ff; }
+        #wave-display { left: 15px; top: 60px; color: #ffff00; }
 
         #top-right-icons {
             position: absolute;
@@ -745,6 +746,7 @@
             #top-right-icons { top: 12px; right: 12px; gap: 8px; }
             #health-container { top: 12px; }
             #multiplier-display { top: 85px; }
+            #wave-display { top: 105px; }
         }
     </style>
 </head>
@@ -809,6 +811,7 @@
                         </div>
                         <div class="hud" id="score-display">Score: <span id="score">0</span></div>
                         <div class="hud" id="multiplier-display">Streak: <span id="streak">0</span></div>
+                        <div class="hud" id="wave-display">Wave: <span id="wave">1</span></div>
                     </div>
 
                     <div id="red-overlay"></div>
@@ -1552,6 +1555,7 @@ window.addEventListener('keydown', (e) => {
         function updateUI() {
             document.getElementById('score').innerText = score;
             document.getElementById('streak').innerText = streak;
+            document.getElementById('wave').innerText = currentWave;
             
             const hb = document.getElementById('health-bar');
             const sb = document.getElementById('shield-bar');
