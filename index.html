@@ -269,7 +269,16 @@
             display: block;
         }
 
-        #health-bar-background {
+        #mana-bar-container {
+            width: clamp(200px, 30%, 300px);
+            height: clamp(6px, 2vh, 10px);
+            background: rgba(255,255,255,0.15);
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #mana-bar-bg {
             width: 100%;
             height: 100%;
             position: relative;
@@ -320,6 +329,23 @@
             position: relative;
             z-index: 2;
             flex-shrink: 0;
+        }
+
+        #mana-bar-bg {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        #mana-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0088ff, #00ffff);
+            transition: width 0.2s;
+            position: relative;
+            z-index: 3;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px #00ffff;
         }
 
         #game-over, #main-menu-container {
@@ -787,6 +813,11 @@
                                     <div id="shield-bar"></div>
                                 </div>
                             </div>
+                            <div id="mana-bar-container">
+                                <div id="mana-bar-bg">
+                                    <div id="mana-bar"></div>
+                                </div>
+                            </div>
                         </div>
                         <div id="top-right-icons">
                             <button class="top-icon-btn" id="settings-btn" title="Settings Menu">
@@ -987,6 +1018,28 @@
         let score = 0;
         let streak = 0;
         let health = 100;
+        let mana = 0;
+        
+        function triggerThunderUltimate() {
+            if (mana < 100 || enemies.length === 0) return;
+            
+            mana = 0;
+            updateUI();
+            
+            // Lightning chain effect on all enemies
+            enemies.forEach((enemy, index) => {
+                setTimeout(() => {
+                    createExplosion(enemy.x, enemy.y, '#00ffff');
+                    score += enemy.word.length * 10 + (streak * 5);
+                }, index * 100);
+            });
+            
+            // Clear enemies after effect
+            setTimeout(() => {
+                enemies = [];
+                updateUI();
+            }, enemies.length * 100 + 200);
+        }
         let shieldActivated = false;
         let enemies = [];
         let stars = [];
@@ -1004,6 +1057,7 @@
         let waveBreak = false;
 
         const heartPath = new Path2D("M32,8c0,16,20,24,20,24s20-8,20-24c0-10-8-18-20-18C40-10,32-2,32,8z");
+        const thunderPath = new Path2D("M20,2L8,14h6l-4,12l10-8h8l-6,12h6L28,12l-8,0z");
         const plusPath = new Path2D("M16 4v24M4 16h24");
 
         const player = { x: 0, y: 0 }; 
@@ -1074,6 +1128,18 @@
                                     color: '#ff0055'
                                 });
                             }
+                        }
+                        
+                        // Thunder icon: gain mana
+                        if (currentTarget.hasThunder) {
+                            mana = Math.min(100, mana + 25);
+                        } else {
+                            mana = Math.min(100, mana + 10);
+                        }
+                        
+                        // Trigger ultimate if mana full
+                        if (mana >= 100) {
+                            triggerThunderUltimate();
                         }
                         enemies = enemies.filter(enemy => enemy !== currentTarget);
                         currentTarget = null;
@@ -1498,13 +1564,15 @@ window.addEventListener('keydown', (e) => {
                     const margin = 60;
                     const maxX = canvas.width - margin;
                     const hasHeart = Math.random() < 0.12;
+                    const hasThunder = Math.random() < 0.05;
                     enemies.push({
                         word: word,
                         typed: 0,
                         x: Math.random() * (maxX - margin) + margin,
                         y: -30,
                         speed: baseSpeed,
-                        hasHeart: hasHeart
+                        hasHeart: hasHeart,
+                        hasThunder: hasThunder
                     });
                     enemiesSpawned++;
                     lastSpawn = timestamp;
@@ -1596,6 +1664,18 @@ window.addEventListener('keydown', (e) => {
             } else {
                 sb.style.width = '0%';
                 shieldContainer.classList.remove('active');
+            }
+            
+            // Mana bar update
+            const mb = document.getElementById('mana-bar');
+            const manaPercent = mana;
+            mb.style.width = manaPercent + '%';
+            
+            // Glow effect when mana full
+            if (mana >= 100) {
+                mb.style.boxShadow = '0 0 15px #00ffff, 0 0 30px #00ffff';
+            } else {
+                mb.style.boxShadow = '0 0 8px #00ffff';
             }
         }
 
@@ -1723,7 +1803,7 @@ window.addEventListener('keydown', (e) => {
                 const scale = 1;
                 const targetY = enemy.y - 17;
                 
-                if (!enemy.hasHeart) {
+                if (!enemy.hasHeart && !enemy.hasThunder) {
                     ctx.save();
                     ctx.translate(enemy.x - 8.5 * scale, targetY - 8.5 * scale);
                     ctx.scale(scale, scale);
@@ -1743,7 +1823,7 @@ window.addEventListener('keydown', (e) => {
                         ctx.stroke(targetPath);
                         ctx.restore();
                     }
-                } else {
+                } else if (enemy.hasHeart) {
                     const medImg = new Image();
                     medImg.src = 'medical-suitcase.png';
                     const bounce = Math.sin(Date.now() / 150) * 2;
@@ -1751,6 +1831,16 @@ window.addEventListener('keydown', (e) => {
                     ctx.save();
                     ctx.globalAlpha = 0.7 + Math.sin(Date.now() / 200) * 0.3;
                     ctx.drawImage(medImg, enemy.x - imgSize/2, enemy.y - 20 + bounce, imgSize, imgSize);
+                    ctx.restore();
+                } else if (enemy.hasThunder) {
+                    // Draw thunder icon with blinking effect
+                    const blink = Math.sin(Date.now() / 100) > 0;
+                    ctx.save();
+                    ctx.translate(enemy.x - 8, enemy.y - 8);
+                    ctx.fillStyle = blink ? '#00ffff' : '#0088ff';
+                    ctx.shadowColor = '#00ffff';
+                    ctx.shadowBlur = blink ? 15 : 8;
+                    ctx.fill(thunderPath);
                     ctx.restore();
                 }
 
