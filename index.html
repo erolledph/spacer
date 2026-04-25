@@ -772,6 +772,9 @@
             <audio id="pew-sound">
                         <source src="pew.mp3" type="audio/mpeg">
                     </audio>
+                    <audio id="boom-sound">
+                        <source src="boom-8bit.mp3" type="audio/mpeg">
+                    </audio>
                     <div id="ui-layer">
                         <div id="health-container">
                             <div id="health-bar-container">
@@ -1051,6 +1054,13 @@
                         score += currentTarget.word.length * 10 + (streak * 5);
                         streak++;
                         createExplosion(currentTarget.x, currentTarget.y, '#00ffff');
+                        // Play boom sound
+                        const boomSound = document.getElementById('boom-sound');
+                        if (pewSoundEnabled && boomSound) {
+                            boomSound.volume = pewVolume;
+                            boomSound.currentTime = 0;
+                            boomSound.play().catch(() => {});
+                        }
                         if (currentTarget.hasHeart) {
                             health = Math.min(100, health + 15);
                             createExplosion(currentTarget.x, currentTarget.y, '#ff0055');
@@ -1596,6 +1606,13 @@ window.addEventListener('keydown', (e) => {
             shieldActivated = false;
             document.getElementById('shield-promo').classList.remove('activated');
             document.getElementById('shield-status').innerText = 'Click to get 2x Shield';
+            // Play boom sound
+            const boomSound = document.getElementById('boom-sound');
+            if (pewSoundEnabled && boomSound) {
+                boomSound.volume = pewVolume;
+                boomSound.currentTime = 0;
+                boomSound.play().catch(() => {});
+            }
             // Keep music playing
             // Don't pause bg-music
             document.getElementById('spaceship-sprite').style.display = 'none';
