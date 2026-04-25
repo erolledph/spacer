@@ -1128,13 +1128,11 @@
                                     color: '#ff0055'
                                 });
                             }
-                        }
-                        
-                        // Thunder icon: gain mana
+}
+                         
+                        // Thunder icon: gain mana (only thunder enemies give mana)
                         if (currentTarget.hasThunder) {
-                            mana = Math.min(100, mana + 25);
-                        } else {
-                            mana = Math.min(100, mana + 10);
+                            mana = Math.min(100, mana + 15);
                         }
                         
                         // Trigger ultimate if mana full
@@ -1833,14 +1831,15 @@ window.addEventListener('keydown', (e) => {
                     ctx.drawImage(medImg, enemy.x - imgSize/2, enemy.y - 20 + bounce, imgSize, imgSize);
                     ctx.restore();
                 } else if (enemy.hasThunder) {
-                    // Draw thunder icon with blinking effect
+                    // Draw thunder icon with blinking effect using image
+                    const thunderImg = new Image();
+                    thunderImg.src = 'lighting-thunder.png';
+                    const bounce = Math.sin(Date.now() / 120) * 2;
                     const blink = Math.sin(Date.now() / 100) > 0;
+                    const imgSize = 20;
                     ctx.save();
-                    ctx.translate(enemy.x - 8, enemy.y - 8);
-                    ctx.fillStyle = blink ? '#00ffff' : '#0088ff';
-                    ctx.shadowColor = '#00ffff';
-                    ctx.shadowBlur = blink ? 15 : 8;
-                    ctx.fill(thunderPath);
+                    ctx.globalAlpha = blink ? 1 : 0.7;
+                    ctx.drawImage(thunderImg, enemy.x - imgSize/2, enemy.y - 22 + bounce, imgSize, imgSize);
                     ctx.restore();
                 }
 
