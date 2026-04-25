@@ -1274,7 +1274,8 @@ window.addEventListener('keydown', (e) => {
             
             score = 0;
             streak = 0;
-
+            mana = 0;
+            
             health = shieldActivated ? 200 : 100;
             enemies = [];
             lasers = [];
@@ -1682,6 +1683,7 @@ window.addEventListener('keydown', (e) => {
             isDemoMode = false;
             wasPlayingBeforePause = false;
             shieldActivated = false;
+            mana = 0;
             document.getElementById('shield-promo').classList.remove('activated');
             document.getElementById('shield-status').innerText = 'Click to get 2x Shield';
             // Play boom sound
