@@ -1322,6 +1322,15 @@ window.addEventListener('keydown', (e) => {
             document.getElementById('main-menu-container').style.display = 'none';
             document.getElementById('start-prompt').style.display = 'none';
 
+            // Reset submit button
+            const submitBtn = document.getElementById('submit-score-btn');
+            if (submitBtn) {
+                submitBtn.innerText = 'SUBMIT';
+                submitBtn.style.background = '';
+                submitBtn.style.boxShadow = '';
+                submitBtn.disabled = false;
+            }
+
             const pauseIcon = document.getElementById('pause-icon');
             const playIcon = document.getElementById('play-icon');
             if (pauseIcon && playIcon) {
