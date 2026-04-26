@@ -1557,8 +1557,8 @@ window.addEventListener('keydown', (e) => {
             const leaderboardList = document.getElementById('leaderboard-list');
 
             async function loadLeaderboard() {
-                leaderboardList.innerHTML = '<p style="color:#888;">Loading...</p>';
-                leaderboardModal.classList.add('show');
+                leaderboardList.innerHTML = '<p style="color:#888;text-align:center;">Loading...</p>';
+                leaderboardModal.style.display = 'flex';
                 
                 try {
                     const response = await fetch('https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec');
@@ -1574,32 +1574,32 @@ window.addEventListener('keydown', (e) => {
                             </div>`
                         ).join('');
                     } else {
-                        leaderboardList.innerHTML = '<p style="color:#888;">No scores yet!</p>';
+                        leaderboardList.innerHTML = '<p style="color:#888;text-align:center;">No scores yet!</p>';
                     }
                 } catch (err) {
-                    leaderboardList.innerHTML = '<p style="color:#ff0055;">Failed to load leaderboard</p>';
+                    leaderboardList.innerHTML = '<p style="color:#ff0055;text-align:center;">Failed to load: ' + err.message + '</p>';
                 }
             }
 
-            leaderboardBtn?.addEventListener('click', (e) => {
+            leaderboardBtn?.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                loadLeaderboard();
+                await loadLeaderboard();
             });
 
             // Close leaderboard button
             document.getElementById('close-leaderboard-btn')?.addEventListener('click', () => {
-                leaderboardModal.classList.remove('show');
+                leaderboardModal.style.display = 'none';
             });
 
             // Close leaderboard X button
             document.getElementById('close-leaderboard-modal')?.addEventListener('click', () => {
-                leaderboardModal.classList.remove('show');
+                leaderboardModal.style.display = 'none';
             });
 
             // Close leaderboard when clicking outside
             leaderboardModal?.addEventListener('click', (e) => {
                 if (e.target === leaderboardModal) {
-                    leaderboardModal.classList.remove('show');
+                    leaderboardModal.style.display = 'none';
                 }
             });
 
@@ -1856,30 +1856,31 @@ window.addEventListener('keydown', (e) => {
             this.disabled = true;
             
             try {
-                // POST score to leaderboard API
-                const formData = new URLSearchParams();
-                formData.append('name', playerName);
-                formData.append('score', finalScore);
-                formData.append('wave', finalWave);
+                // POST score to leaderboard API using query params (same as curl test)
+                const url = 'https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec' +
+                    '?name=' + encodeURIComponent(playerName) +
+                    '&score=' + finalScore +
+                    '&wave=' + finalWave;
                 
-                const response = await fetch('https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec', {
-                    method: 'POST',
-                    body: formData
+                const response = await fetch(url, {
+                    method: 'POST'
                 });
                 
                 const result = await response.json();
+                console.log('Score submit result:', result);
                 
                 if (result.success) {
                     this.innerText = 'SUBMITTED!';
                     this.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
                     this.style.boxShadow = '0 0 25px rgba(0,255,0,0.5)';
                 } else {
-                    this.innerText = 'TRY AGAIN';
+                    this.innerText = 'TRY AGAIN: ' + (result.error || 'Unknown');
                     this.style.background = 'linear-gradient(135deg, #ff0055, #cc0044)';
                     this.disabled = false;
                 }
             } catch (err) {
-                this.innerText = 'ERROR';
+                console.log('Score submit error:', err);
+                this.innerText = 'ERROR: ' + err.message;
                 this.style.background = 'linear-gradient(135deg, #ff0055, #cc0044)';
                 this.disabled = false;
             }
