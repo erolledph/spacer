@@ -1107,7 +1107,7 @@
         }
         window.addEventListener('resize', resizeCanvas);
 
-        const wordList = [
+        const defaultWords = [
             "space", "laser", "orbit", "galaxy", "nebula", "comet", "meteor", 
             "rocket", "thrust", "shield", "quasar", "pulsar", "cosmos", 
             "vacuum", "gravity", "eclipse", "horizon", "starlight", "voyager",
@@ -1128,6 +1128,21 @@
             "invader", "attacker", "raider", "pirate", "mercenary", "colonist",
             "explorer", "pioneer", "guardian", "protector", "defender", "vanguard"
         ];
+
+        let wordList = [...defaultWords];
+
+        fetch('words.txt')
+            .then(response => response.text())
+            .then(text => {
+                const words = text.split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length > 0);
+                if (words.length > 0) {
+                    wordList = words;
+                    console.log('Loaded ' + words.length + ' words from words.txt');
+                }
+            })
+            .catch(() => {
+                console.log('Using default word list');
+            });
         
         const longWords = wordList.filter(w => w.length >= 8);
         
@@ -1754,8 +1769,8 @@ window.addEventListener('keydown', (e) => {
                 currentWave++;
                 updateUI();
                 enemiesSpawned = 0;
-                enemiesPerWave = Math.min(5 + (currentWave - 1) * 2, 15);
-                spawnRate = Math.max(1500 - (currentWave * 50), 700);
+                enemiesPerWave = 5 + (currentWave - 1) * 2;
+                spawnRate = Math.max(1500 - (currentWave * 50), 300);
                 waveBreak = true;
                 setTimeout(() => {
                     waveBreak = false;
@@ -1794,8 +1809,6 @@ window.addEventListener('keydown', (e) => {
                     });
                     enemiesSpawned++;
                     lastSpawn = timestamp;
-                    
-                    if (spawnRate > 700) spawnRate -= 5;
                 }
             }
         }
