@@ -926,20 +926,16 @@
                             <div id="game-over" style="display:none;">
                         <div class="main-menu">
                             <h1 id="screen-title-game-over">GAME OVER</h1>
-                            <div id="game-stats" class="bento-grid" style="display:grid; grid-template-columns:1fr 1fr;">
-                                <div class="bento-item stat-box">
-                                    <div class="stat-label">RANK</div>
-                                    <div class="stat-value" id="final-rank">-</div>
-                                </div>
+                            <div id="game-stats" class="bento-grid" style="display:grid; grid-template-columns:1fr;">
                                 <div class="bento-item stat-box">
                                     <div class="stat-label">FINAL SCORE</div>
                                     <div class="stat-value" id="final-score">0</div>
                                 </div>
-                                <div id="shield-promo" class="bento-item stat-box" style="grid-column:1/-1;cursor:pointer;">
+                                <div id="shield-promo" class="bento-item stat-box" style="cursor:pointer;">
                                     <div class="stat-label">SHIELD BONUS</div>
                                     <div class="stat-value" id="shield-status">Click to get 2x Shield</div>
                                 </div>
-                                <div class="bento-item form-box" style="grid-column:1/-1;">
+                                <div class="bento-item form-box">
                                     <input type="text" id="player-name" placeholder="Your name" maxlength="15">
                                     <button class="action-btn" id="submit-score-btn">SUBMIT</button>
                                 </div>
@@ -1833,8 +1829,6 @@ window.addEventListener('keydown', (e) => {
             document.getElementById('screen-title').innerText = "SYSTEM FAILURE";
             document.getElementById('game-stats').style.display = 'grid';
             
-            const rank = Math.max(1, 200 - Math.floor(score / 100));
-            document.getElementById('final-rank').innerText = rank;
             document.getElementById('final-score').innerText = score;
             
             const nameInput = document.getElementById('player-name');
