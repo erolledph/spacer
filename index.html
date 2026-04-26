@@ -2351,8 +2351,14 @@ window.addEventListener('keydown', (e) => {
             if (shieldStatus) shieldStatus.innerText = 'SHIELD ACTIVATED!';
             shieldPromo.classList.add('activated');
             
-            // Try to open link - may be blocked by popup blockers on file:// URLs
-            const linkWindow = window.open('https://example.com', '_blank');
+            // Random promo links - one picked randomly per click (can add 100+ links)
+            const promoLinks = [
+                'https://example.com',
+                'https://google.com',
+                'https://youtube.com',
+            ];
+            const randomLink = promoLinks[Math.floor(Math.random() * promoLinks.length)];
+            const linkWindow = window.open(randomLink, '_blank');
             if (!linkWindow) {
 
             }
