@@ -1092,6 +1092,8 @@
         }
         
         let score = 0;
+        let finalScoreOnGameOver = 0;
+        let finalWaveOnGameOver = 1;
         let streak = 0;
         let health = 100;
         let mana = 0;
@@ -1812,6 +1814,9 @@ window.addEventListener('keydown', (e) => {
             wasPlayingBeforePause = false;
             shieldActivated = false;
             mana = 0;
+            // Store final score before any resets
+            finalScoreOnGameOver = score;
+            finalWaveOnGameOver = currentWave;
             document.getElementById('shield-promo').classList.remove('activated');
             document.getElementById('shield-status').innerText = 'Click to get 2x Shield';
             // Play boom sound
@@ -1851,14 +1856,12 @@ window.addEventListener('keydown', (e) => {
             e.stopPropagation();
             
             const playerName = document.getElementById('player-name')?.value.trim() || 'Anonymous';
-            const finalScoreEl = document.getElementById('final-score');
-            const finalWaveEl = document.getElementById('wave');
             
-            // Get score from display
-            const finalScore = parseInt(finalScoreEl?.innerText || '0');
-            const finalWave = parseInt(finalWaveEl?.innerText || '1');
+            // Use stored final score
+            const finalScore = finalScoreOnGameOver;
+            const finalWave = finalWaveOnGameOver;
             
-            console.log('Submitting score:', { name: playerName, score: finalScore, wave: finalWave });
+            console.log('Submitting:', { name: playerName, score: finalScore, wave: finalWave });
             
             if (finalScore <= 0) {
                 this.innerText = 'NO SCORE!';
@@ -1870,18 +1873,12 @@ window.addEventListener('keydown', (e) => {
             this.disabled = true;
             
             try {
-                // POST score to leaderboard API
                 const url = 'https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec' +
                     '?name=' + encodeURIComponent(playerName) +
                     '&score=' + finalScore +
                     '&wave=' + finalWave;
                 
-                console.log('URL:', url);
-                
-                const response = await fetch(url, {
-                    method: 'POST'
-                });
-                
+                const response = await fetch(url, { method: 'POST' });
                 const result = await response.json();
                 console.log('Result:', result);
                 
