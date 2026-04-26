@@ -65,17 +65,20 @@ function getLeaderboard() {
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] && data[i][1]) {
       players.push({
-        rank: i,
         name: data[i][0],
-        score: data[i][1],
+        score: parseInt(data[i][1]) || 0,
         wave: data[i][2] || 1,
         date: data[i][3] || ''
       });
     }
   }
   
-  // Sort by score descending and return top 20
+  // Sort by score descending
   players.sort((a, b) => b.score - a.score);
+  
+  // Assign ranks after sorting
+  players.forEach((p, i) => p.rank = i + 1);
+  
   return { players: players.slice(0, 20) };
 }
 
