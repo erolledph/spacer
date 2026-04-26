@@ -1849,14 +1849,17 @@ window.addEventListener('keydown', (e) => {
         document.getElementById('submit-score-btn')?.addEventListener('click', async function(e) {
             e.stopPropagation();
             const playerName = document.getElementById('player-name')?.value.trim() || 'Anonymous';
-            const finalScore = score;
-            const finalWave = currentWave;
+            // Get score from display (more reliable)
+            const finalScore = parseInt(document.getElementById('final-score')?.innerText || '0');
+            const finalWave = parseInt(document.getElementById('wave')?.innerText || '1');
+            
+            console.log('Submitting:', playerName, finalScore, finalWave);
             
             this.innerText = 'SUBMITTING...';
             this.disabled = true;
             
             try {
-                // POST score to leaderboard API using query params (same as curl test)
+                // POST score to leaderboard API using query params
                 const url = 'https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec' +
                     '?name=' + encodeURIComponent(playerName) +
                     '&score=' + finalScore +
