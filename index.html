@@ -1847,43 +1847,55 @@ window.addEventListener('keydown', (e) => {
         }
 
         document.getElementById('submit-score-btn')?.addEventListener('click', async function(e) {
+            e.preventDefault();
             e.stopPropagation();
-            const playerName = document.getElementById('player-name')?.value.trim() || 'Anonymous';
-            // Get score from display (more reliable)
-            const finalScore = parseInt(document.getElementById('final-score')?.innerText || '0');
-            const finalWave = parseInt(document.getElementById('wave')?.innerText || '1');
             
-            console.log('Submitting:', playerName, finalScore, finalWave);
+            const playerName = document.getElementById('player-name')?.value.trim() || 'Anonymous';
+            const finalScoreEl = document.getElementById('final-score');
+            const finalWaveEl = document.getElementById('wave');
+            
+            // Get score from display
+            const finalScore = parseInt(finalScoreEl?.innerText || '0');
+            const finalWave = parseInt(finalWaveEl?.innerText || '1');
+            
+            console.log('Submitting score:', { name: playerName, score: finalScore, wave: finalWave });
+            
+            if (finalScore <= 0) {
+                this.innerText = 'NO SCORE!';
+                this.style.background = 'linear-gradient(135deg, #ff0055, #cc0044)';
+                return;
+            }
             
             this.innerText = 'SUBMITTING...';
             this.disabled = true;
             
             try {
-                // POST score to leaderboard API using query params
+                // POST score to leaderboard API
                 const url = 'https://script.google.com/macros/s/AKfycbweUVgN3MzNQcT1qEHrdMSDO0PxUd8CNSG_E89E6taRrJcltQD2EyFmmpKeXR-G3ohmgA/exec' +
                     '?name=' + encodeURIComponent(playerName) +
                     '&score=' + finalScore +
                     '&wave=' + finalWave;
+                
+                console.log('URL:', url);
                 
                 const response = await fetch(url, {
                     method: 'POST'
                 });
                 
                 const result = await response.json();
-                console.log('Score submit result:', result);
+                console.log('Result:', result);
                 
                 if (result.success) {
                     this.innerText = 'SUBMITTED!';
                     this.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
-                    this.style.boxShadow = '0 0 25px rgba(0,255,0,0.5)';
                 } else {
-                    this.innerText = 'TRY AGAIN: ' + (result.error || 'Unknown');
+                    this.innerText = result.error || 'TRY AGAIN';
                     this.style.background = 'linear-gradient(135deg, #ff0055, #cc0044)';
                     this.disabled = false;
                 }
             } catch (err) {
-                console.log('Score submit error:', err);
-                this.innerText = 'ERROR: ' + err.message;
+                console.log('Error:', err);
+                this.innerText = err.message;
                 this.style.background = 'linear-gradient(135deg, #ff0055, #cc0044)';
                 this.disabled = false;
             }
