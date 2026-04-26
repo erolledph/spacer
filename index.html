@@ -1630,7 +1630,7 @@ window.addEventListener('keydown', (e) => {
                 leaderboardModal.style.display = 'flex';
                 
                 try {
-                    const response = await fetch('https://script.google.com/macros/s/AKfycbyLFvAQRc8DTUy0qGuvYt5bvJDHzW48ixmL7ky2OeuY-XK6ocT-RMvBQFsFIfVBKJq97Q/exec');
+                    const response = await fetch('https://script.google.com/macros/s/AKfycbzkOb8QT09FzVOcQXxtXX6OCLuD_JoYTtXXrM3cA9JSSyCBL1ovxG0yI_FInqDwTjft-w/exec');
                     const data = await response.json();
                     
                     if (data.players && data.players.length > 0) {
@@ -1947,7 +1947,7 @@ window.addEventListener('keydown', (e) => {
             this.disabled = true;
             
             try {
-                const url = 'https://script.google.com/macros/s/AKfycbyLFvAQRc8DTUy0qGuvYt5bvJDHzW48ixmL7ky2OeuY-XK6ocT-RMvBQFsFIfVBKJq97Q/exec' +
+                const url = 'https://script.google.com/macros/s/AKfycbzkOb8QT09FzVOcQXxtXX6OCLuD_JoYTtXXrM3cA9JSSyCBL1ovxG0yI_FInqDwTjft-w/exec' +
                     '?name=' + encodeURIComponent(playerName) +
                     '&score=' + finalScore +
                     '&wave=' + finalWave;
