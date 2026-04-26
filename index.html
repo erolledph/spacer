@@ -777,14 +777,12 @@
 
         #leaderboard-modal {
             display: none;
-            grid;
-            place-items: center;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(12px);
             z-index: 10001;
             align-items: center;
@@ -793,32 +791,123 @@
 
         #leaderboard-modal.show { display: flex; }
 
+        .leaderboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard-tab {
+            padding: 8px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            color: #888;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .leaderboard-tab.active {
+            background: var(--neon-pink);
+            border-color: var(--neon-pink);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+        }
+
         .leaderboard-list {
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            box-shadow: inset 0 0 30px rgba(255, 0, 85, 0.1);
+        }
+
+        .leaderboard-list::-webkit-scrollbar { width: 6px; }
+
+        .leaderboard-list::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+
+        .leaderboard-list::-webkit-scrollbar-thumb {
+            background: var(--neon-pink);
+            border-radius: 3px;
         }
 
         .leaderboard-item {
             display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border-bottom: 1px solid rgba(0,255,255,0.1);
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             font-size: 14px;
+            transition: background 0.2s ease;
         }
 
-        .leaderboard-item:first-child {
-            color: #ffff00;
+        .leaderboard-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .leaderboard-item.top-1 {
+            background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, transparent 100%);
+            border-left: 3px solid #ffd700;
+        }
+        .leaderboard-item.top-1 .leaderboard-rank { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+
+        .leaderboard-item.top-2 {
+            background: linear-gradient(90deg, rgba(192,192,192,0.15) 0%, transparent 100%);
+            border-left: 3px solid #c0c0c0;
+        }
+        .leaderboard-item.top-2 .leaderboard-rank { color: #c0c0c0; text-shadow: 0 0 10px #c0c0c0; }
+
+        .leaderboard-item.top-3 {
+            background: linear-gradient(90deg, rgba(205,127,50,0.15) 0%, transparent 100%);
+            border-left: 3px solid #cd7f32;
+        }
+        .leaderboard-item.top-3 .leaderboard-rank { color: #cd7f32; text-shadow: 0 0 10px #cd7f32; }
+
+        .leaderboard-rank {
+            width: 35px;
             font-weight: bold;
+            font-size: 13px;
         }
 
-        .leaderboard-rank { color: var(--neon-blue); width: 30px; }
-        .leaderboard-name { flex: 1; text-align: left; }
-        .leaderboard-score { color: var(--neon-pink); }
-        .leaderboard-wave { color: #888; font-size: 12px; margin-left: 10px; }
+        .leaderboard-rank.gold { color: #ffd700; }
+        .leaderboard-rank.silver { color: #c0c0c0; }
+        .leaderboard-rank.bronze { color: #cd7f32; }
+
+        .leaderboard-name {
+            flex: 1;
+            text-align: left;
+            color: #fff;
+        }
+
+        .leaderboard-score {
+            color: var(--neon-pink);
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .leaderboard-wave {
+            color: #666;
+            font-size: 12px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px var(--neon-pink); }
+            50% { box-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink); }
+        }
+
+        .leaderboard-item.current {
+            background: rgba(255, 0, 85, 0.2);
+            border: 1px solid var(--neon-pink);
+            animation: pulse 2s infinite;
+        }
 
         .modal-close-btn {
             position: absolute;
@@ -950,7 +1039,10 @@
                         <div class="main-menu">
                             <button class="modal-close-btn" id="close-leaderboard-modal">&times;</button>
                             <h1 id="leaderboard-title">LEADERBOARD</h1>
-                            <p class="subtitle">TOP PLAYERS</p>
+                            <div class="leaderboard-tabs">
+                                <button class="leaderboard-tab active">GLOBAL</button>
+                                <button class="leaderboard-tab">FRIENDS</button>
+                            </div>
                             <div id="leaderboard-list" class="leaderboard-list">
                                 <p style="color:#888;">Loading...</p>
                             </div>
@@ -1572,14 +1664,22 @@ window.addEventListener('keydown', (e) => {
                     const data = await response.json();
                     
                     if (data.players && data.players.length > 0) {
-                        leaderboardList.innerHTML = data.players.map(p => 
-                            `<div class="leaderboard-item">
-                                <span class="leaderboard-rank">#${p.rank}</span>
+                        const currentName = localStorage.getItem('playerName') || '';
+                        leaderboardList.innerHTML = data.players.map(p => {
+                            let itemClass = 'leaderboard-item';
+                            let rankClass = 'leaderboard-rank';
+                            let rankText = '#' + p.rank;
+                            if (p.rank === 1) { itemClass += ' top-1'; rankClass += ' gold'; rankText = '👑'; }
+                            else if (p.rank === 2) { itemClass += ' top-2'; rankClass += ' silver'; }
+                            else if (p.rank === 3) { itemClass += ' top-3'; rankClass += ' bronze'; }
+                            if (p.name === currentName) itemClass += ' current';
+                            return `<div class="${itemClass}">
+                                <span class="${rankClass}">${rankText}</span>
                                 <span class="leaderboard-name">${p.name}</span>
                                 <span class="leaderboard-score">${p.score}</span>
                                 <span class="leaderboard-wave">W${p.wave}</span>
-                            </div>`
-                        ).join('');
+                            </div>`;
+                        }).join('');
                     } else {
                         leaderboardList.innerHTML = '<p style="color:#888;text-align:center;">No scores yet!</p>';
                     }
