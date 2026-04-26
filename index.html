@@ -1643,10 +1643,11 @@ window.addEventListener('keydown', (e) => {
                             else if (p.rank === 2) { itemClass += ' top-2'; rankClass += ' silver'; }
                             else if (p.rank === 3) { itemClass += ' top-3'; rankClass += ' bronze'; }
                             if (p.name === currentName) itemClass += ' current';
+                            const formattedScore = p.score.toLocaleString();
                             return `<div class="${itemClass}">
                                 <span class="${rankClass}">${rankText}</span>
                                 <span class="leaderboard-name">${p.name}</span>
-                                <span class="leaderboard-score">${p.score}</span>
+                                <span class="leaderboard-score">${formattedScore}</span>
                                 <span class="leaderboard-wave">W${p.wave}</span>
                             </div>`;
                         }).join('');
