@@ -79,7 +79,7 @@ function getLeaderboard() {
   // Assign ranks after sorting
   players.forEach((p, i) => p.rank = i + 1);
   
-  return { players: players.slice(0, 20) };
+  return { players: players.slice(0, 100) };
 }
 
 // Submit score to leaderboard
