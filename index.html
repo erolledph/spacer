@@ -791,32 +791,6 @@
 
         #leaderboard-modal.show { display: flex; }
 
-        .leaderboard-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .leaderboard-tab {
-            padding: 8px 24px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px;
-            color: #888;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .leaderboard-tab.active {
-            background: var(--neon-pink);
-            border-color: var(--neon-pink);
-            color: white;
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
-        }
-
         .leaderboard-list {
             max-height: 320px;
             overflow-y: auto;
@@ -1039,10 +1013,6 @@
                         <div class="main-menu">
                             <button class="modal-close-btn" id="close-leaderboard-modal">&times;</button>
                             <h1 id="leaderboard-title">LEADERBOARD</h1>
-                            <div class="leaderboard-tabs">
-                                <button class="leaderboard-tab active">GLOBAL</button>
-                                <button class="leaderboard-tab">FRIENDS</button>
-                            </div>
                             <div id="leaderboard-list" class="leaderboard-list">
                                 <p style="color:#888;">Loading...</p>
                             </div>
