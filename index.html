@@ -380,6 +380,66 @@
             box-sizing: border-box;
         }
 
+        .config-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: rgba(0,255,255,0.05);
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .config-row label {
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .config-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .config-btn {
+            background: none;
+            border: none;
+            color: var(--neon-blue);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .config-btn:hover {
+            color: var(--neon-pink);
+        }
+
+        .config-controls img {
+            width: 36px;
+            height: 36px;
+            image-rendering: pixelated;
+        }
+
+        .config-controls #wave-display-value {
+            color: var(--neon-blue);
+            font-family: monospace;
+            font-size: 16px;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .config-controls input[type="color"] {
+            background: none;
+            border: none;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+        }
+
         @keyframes modalSlideIn {
             from { opacity: 0; transform: scale(0.92) translateY(15px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
@@ -1040,17 +1100,27 @@
                             <h1 id="screen-title">BARRACKS</h1>
                             <p class="subtitle">Configuration</p>
                             <div class="config-section" style="margin: 20px 0; text-align: left;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: rgba(0,255,255,0.05); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,255,255,0.2);">
-                                    <label style="color: #fff; font-family: 'Courier New', Courier, monospace; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Spaceship</label>
-                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                        <button id="ship-prev-btn" style="background:none; border:none; color:var(--neon-blue); font-size:20px; cursor:pointer;">&lt;</button>
-                                        <img id="ship-preview-img" src="spaceship-gif.gif" style="width: 40px; height: 40px; image-rendering: pixelated;">
-                                        <button id="ship-next-btn" style="background:none; border:none; color:var(--neon-blue); font-size:20px; cursor:pointer;">&gt;</button>
+                                <div class="config-row">
+                                    <label>Start Wave</label>
+                                    <div class="config-controls">
+                                        <button id="wave-prev-btn" class="config-btn">&lt;</button>
+                                        <span id="wave-display-value">1</span>
+                                        <button id="wave-next-btn" class="config-btn">&gt;</button>
                                     </div>
                                 </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: rgba(0,255,255,0.05); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,255,255,0.2);">
-                                    <label for="laser-color-picker" style="color: #fff; font-family: 'Courier New', Courier, monospace; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Laser Color</label>
-                                    <input type="color" id="laser-color-picker" value="#00ffff" style="background: none; border: none; width: 40px; height: 40px; cursor: pointer;">
+                                <div class="config-row">
+                                    <label>Spaceship</label>
+                                    <div class="config-controls">
+                                        <button id="ship-prev-btn" class="config-btn">&lt;</button>
+                                        <img id="ship-preview-img" src="spaceship-gif.gif">
+                                        <button id="ship-next-btn" class="config-btn">&gt;</button>
+                                    </div>
+                                </div>
+                                <div class="config-row">
+                                    <label>Laser Color</label>
+                                    <div class="config-controls">
+                                        <input type="color" id="laser-color-picker" value="#00ffff">
+                                    </div>
                                 </div>
                             </div>
                             <div class="menu-buttons">
@@ -1216,6 +1286,7 @@
         let baseSpeed = 0.5;
         let screenShake = 0;
         let currentWave = 1;
+        let gameStartWave = 1;
         let enemiesSpawned = 0;
         let enemiesPerWave = 5;
         let waveBreak = false;
@@ -1456,11 +1527,12 @@ window.addEventListener('keydown', (e) => {
             particles = [];
             currentTarget = null;
             screenShake = 0;
-            currentWave = 1;
+            gameStartWave = parseInt(document.getElementById('wave-display-value')?.textContent) || 1;
+            currentWave = gameStartWave;
             enemiesSpawned = 0;
-            enemiesPerWave = 5;
+            enemiesPerWave = 5 + (currentWave - 1) * 2;
             waveBreak = false;
-            spawnRate = 1500; 
+            spawnRate = Math.max(1500 - (currentWave * 50), 300); 
             baseSpeed = (canvas.height / 1500) * speedMultiplier; 
             isPlaying = true;
             
@@ -1523,6 +1595,29 @@ window.addEventListener('keydown', (e) => {
             const shipNextBtn = document.getElementById('ship-next-btn');
             const shipPreviewImg = document.getElementById('ship-preview-img');
             const playerSpriteImg = document.getElementById('spaceship-sprite');
+
+            const wavePrevBtn = document.getElementById('wave-prev-btn');
+            const waveNextBtn = document.getElementById('wave-next-btn');
+            const waveDisplayValue = document.getElementById('wave-display-value');
+            let selectedStartWave = 1;
+
+            function updateWaveDisplay() {
+                if (waveDisplayValue) waveDisplayValue.textContent = selectedStartWave;
+            }
+
+            wavePrevBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                selectedStartWave = selectedStartWave <= 1 ? 99 : selectedStartWave - 1;
+                updateWaveDisplay();
+            });
+
+            waveNextBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                selectedStartWave = selectedStartWave >= 99 ? 1 : selectedStartWave + 1;
+                updateWaveDisplay();
+            });
 
             function updateShip() {
                 const newSrc = availableShips[currentShipIndex];
