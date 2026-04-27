@@ -1474,23 +1474,21 @@
         }
 
 window.addEventListener('keydown', (e) => {
-            if (e.code === 'Enter' || e.code === 'Space') {
+            // Only handle Enter/Space for pause when not actively typing an enemy
+            if ((e.code === 'Enter' || e.code === 'Space') && (!isPlaying || currentTarget)) {
                 e.preventDefault();
+                
                 const settingsModal = document.getElementById('settings-modal');
                 const pausedOverlay = document.getElementById('paused-overlay');
                 
-
-                
                 if (!isPlaying && !pausedOverlay.classList.contains('show')) {
                     // Start new game from start screen
-
                     document.getElementById('start-prompt').style.display = 'none';
                     startGame();
                     return;
                 }
                 
                 // Normal pause/resume toggle
-
                 window.doPauseResume();
                 return;
             }
