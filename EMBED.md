@@ -10,13 +10,13 @@ The simplest way to embed - no code changes needed.
 
 ```html
 <!-- Basic embed -->
-<iframe src="https://erolledph.github.io/spacer/" width="800" height="600" frameborder="0"></iframe>
+<iframe src="https://keyspacer.pages.dev/" width="800" height="600" frameborder="0"></iframe>
 
 <!-- With custom size -->
-<iframe src="https://erolledph.github.io/spacer/" width="1024" height="768" frameborder="0" allow="fullscreen"></iframe>
+<iframe src="https://keyspacer.pages.dev/" width="1024" height="768" frameborder="0" allow="fullscreen"></iframe>
 
 <!-- Responsive embed -->
-<iframe src="https://erolledph.github.io/spacer/" style="width:100%;max-width:1024px;height:100vh;max-height:768px;border:none;"></iframe>
+<iframe src="https://keyspacer.pages.dev/" style="width:100%;max-width:1024px;height:100vh;max-height:768px;border:none;"></iframe>
 ```
 
 ### Iframe Parameters
@@ -37,7 +37,7 @@ Add this to the end of the body:
 ```html
 <div id="keyboard-ranger-game"></div>
 
-<script src="https://erolledph.github.io/spacer/embed.js"></script>
+<script src="https://keyspacer.pages.dev/embed.js"></script>
 <script>
   KeyboardRanger.init({
     width: 800,
@@ -79,7 +79,7 @@ For sites that want the game as the main content:
   </style>
 </head>
 <body>
-  <iframe src="https://erolledph.github.io/spacer/?fullscreen=true" 
+  <iframe src="https://keyspacer.pages.dev/?fullscreen=true" 
           width="100%" height="100%" 
           frameborder="0" 
           allow="fullscreen"
@@ -101,7 +101,7 @@ function keyboard_ranger_shortcode($atts) {
     'height' => '600',
   ], $atts);
   
-  return '<iframe src="https://erolledph.github.io/spacer/" 
+  return '<iframe src="https://keyspacer.pages.dev/" 
           width="'.$atts['width'].'" 
           height="'.$atts['height'].'" 
           frameborder="0"
@@ -154,7 +154,7 @@ Then use in posts:
 <body>
   <div class="game-container">
     <h1>⌨️ KEYBOARD RANGER</h1>
-    <iframe src="https://erolledph.github.io/spacer/" 
+    <iframe src="https://keyspacer.pages.dev/" 
             width="100%" 
             height="640" 
             frameborder="0"
@@ -170,7 +170,7 @@ Then use in posts:
 
 ## Game URL
 
-- **Play Online**: https://erolledph.github.io/spacer/
+- **Play Online**: https://keyspacer.pages.dev/
 - **GitHub**: https://github.com/erolledph/spacer
 
 ---

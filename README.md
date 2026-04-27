@@ -6,7 +6,7 @@ A free sci-fi typing defense game. Defend the galaxy by typing words to destroy 
 
 ## Play Online
 
-**Live Game**: https://erolledph.github.io/spacer/
+**Live Game**: https://keyspacer.pages.dev/
 
 ## How to Play
 
@@ -31,7 +31,7 @@ See [EMBED.md](EMBED.md) for website embedding options.
 
 ### Quick Iframe Embed
 ```html
-<iframe src="https://erolledph.github.io/spacer/" 
+<iframe src="https://keyspacer.pages.dev/" 
         width="100%" 
         height="640" 
         frameborder="0"
