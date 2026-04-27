@@ -1,0 +1,7 @@
+# Robots.txt for Keyboard Ranger
+# https://keyspacer.pages.dev/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://keyspacer.pages.dev/sitemap.xml
